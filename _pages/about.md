@@ -5,7 +5,7 @@ permalink: /
 # subtitle: <a href='#'>Affiliations</a>. Address. Contacts. Moto. Etc.
 
 profile:
-  align: center
+  align: left
   image: prof_pic.jpg
   address: >
     <p>Dept. of SSIE</p>
