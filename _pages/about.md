@@ -8,13 +8,13 @@ profile:
   align: right
   image: prof_pic.jpg
   address: >
-    <p>555 your office number</p>
-    <p>123 your address street</p>
-    <p>Your City, State 12345</p>
+    <p>Dept. of SSIE</p>
+    <p>Binghamton University</p>
+    <p>Binghamton, NY 13902</p>
 
 news: true  # includes a list of news items
 selected_papers: true # includes a list of papers marked as "selected={true}"
 social: true  # includes social icons at the bottom of the page
 ---
 
-I'm currently PhD candidate in the Department of Systems Science and Industrial Engineering at Binghamton University. My research interests lie in Machine Learning/Deep Learning with special focus on probabilistic model, e.g., Gaussian process, active learning and self-supervised learning.
+I'm currently PhD candidate in the Department of Systems Science and Industrial Engineering (SSIE) at Binghamton University. My research interests lie in Machine Learning/Deep Learning with special focus on probabilistic model, e.g., Gaussian process, active learning and self-supervised learning.
