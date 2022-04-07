@@ -17,4 +17,4 @@ selected_papers: false # includes a list of papers marked as "selected={true}"
 social: true  # includes social icons at the bottom of the page
 ---
 
-I'm currently PhD candidate in the Department of Systems Science and Industrial Engineering (SSIE) at Binghamton University. My research interests lie in Machine Learning/Deep Learning with special focus on probabilistic model, e.g., Gaussian process, active learning and self-supervised learning. My CV can be found [here](assets/pdf/Industrial_Resume.pdf).
+I'm currently a PhD candidate in the Department of Systems Science and Industrial Engineering (SSIE) at Binghamton University. My research interests lie in Machine Learning/Deep Learning with special focus on probabilistic model, e.g., Gaussian process, active learning and self-supervised learning. My CV can be found [here](assets/pdf/Industrial_Resume.pdf).
