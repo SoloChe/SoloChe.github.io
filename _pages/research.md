@@ -6,10 +6,17 @@ description: My current research interests are listed below. Details will be add
 nav: true
 ---
 
-# 1.Gaussian Process
+# Research:
+## 1.Gaussian Process (GP)
+Sparse GP, Deep GP, GP Latent Variable Model (GPLVM), Variational Inference for GP, Sampling methods, e.g., MCMC, HMC 
+ 
+## 2.Bayesian Deep Learning
+Bayes by Backprop with Local Reparameterization, Stochastic Gradient Hamiltonial Monte Carlo (SHMC) 
 
-# 2.Bayesian Deep Learning
+## 3.Active Learning
+Expected Improvement (EI), Batch-mode Sampling
 
-# 3.Active Learning
+# Learning:
+## 1. CV
+## 2. NLP 
 
-# 4.Self-supervised Learning
