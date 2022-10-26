@@ -6,7 +6,6 @@ description: My current research interests are listed below. Details will be add
 nav: true
 ---
 
-# Research:
 ## 1.Gaussian Process (GP)
 Sparse GP, Deep GP, GP Latent Variable Model (GPLVM), Variational Inference for GP, Sampling methods, e.g., MCMC, HMC 
  
