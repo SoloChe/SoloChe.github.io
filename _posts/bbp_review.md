@@ -1,13 +1,8 @@
 ---
 layout: post
 title: Revisit of Bayes by Backprop (BBP)
-date: 2015-10-20 11:59:00-0400
 description: BBP review
-comments: true
-categories: Bayes, Deep Learning
 ---
-This post shows how to add DISQUS comments.
-
 # Review of Weight Uncertainty in Neural Network
 Some useful links:
 1. [Paper can be found here](https://arxiv.org/abs/1505.05424)

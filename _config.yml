@@ -85,7 +85,7 @@ panelbear_analytics:  # panelbear analytics site ID (format: XXXXXXXXX)
 # -----------------------------------------------------------------------------
 
 blog_name: Yiming's blog  # your blog must have a name for it to show up in the nav bar
-blog_description: I share posts in terms os machine learning/deep learning with special focus on Bayesian framework.
+blog_description: I share posts in terms of machine learning/deep learning with special focus on Bayesian framework.
 permalink: /blog/:year/:title/
 
 # Pagination
