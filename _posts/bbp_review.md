@@ -1,7 +1,10 @@
 ---
 layout: post
-title: Revisit of Bayes by Backprop (BBP)
-description: BBP review
+title: a post with math 2
+date: 2015-10-20 11:12:00-0400
+description: an example of a blog post with some math
+tags: formatting math
+categories: sample-posts
 ---
 # Review of Weight Uncertainty in Neural Network
 Some useful links:
