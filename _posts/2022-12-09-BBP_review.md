@@ -13,7 +13,10 @@ Some useful links:
    
 # Bayes by Backprop (BBP) Framework
 A probabilistic model: $P(y\mid\x, \w)$: given an input $x\in \mathbb{R}^p, y\in\mathcal{Y}$, using the set of parameters or weights $\w$.
-$$P(\w\mid\x, y) = \frac{P(y\mid\x, \w)p(\w)}{P(y)}$$
+
+$$
+P(\w\mid\x, y) = \frac{P(y\mid\x, \w)p(\w)}{P(y)}
+$$
 
 Note that we assume the each parameter $w_i$ are i.i.d. and then we have $p(\w)=p(w_1)p(w_2)...p(w_m)$ where $m$ is the number of parameters.
 # Loss Function 
@@ -40,6 +43,7 @@ Inference is intractable because it needs to consider each configuration of $w$.
 $$P(\hat{y}\mid\hat{\x}) = \mathbb{E}_{p(\w\mid D)}[P(\hat{y}\mid\hat{\x},\w)]$$
 
 ## Minimization of KL Divergence (ELBO)
+
 $$
 \begin{align*}
 \theta^* &= \argmin{\theta} KL[q(\w\mid\theta)\mid P(\w\mid\mathcal{D})]\\
