@@ -20,7 +20,7 @@ $$
 
 Note that we assume the each parameter $w_i$ are i.i.d. and then we have $p(\w)=p(w_1)p(w_2)...p(w_m)$ where $m$ is the number of parameters.
 # Loss Function 
-The weights can be learnt by MLE given a set of training samples $\mathcal{D} = {\x_i, y_i}_i$
+The weights can be learnt by MLE given a set of training samples $\mathcal{D} = \\{\x_i, y_i\\}_i$
 
 $$
 \begin{align*}
