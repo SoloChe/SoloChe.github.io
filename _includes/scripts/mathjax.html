@@ -2,9 +2,20 @@
   <!-- MathJax -->
   <script type="text/javascript">
     window.MathJax = {
-      tex: {
-        tags: 'ams'
-      }
+      loader: {load: ['[tex]/configmacros']},
+      tex: {tags: 'ams', 
+            packages: {'[+]': ['configmacros']},
+            macros: {
+                      RR: '{\\bf R}',
+                      w: ['\\boldsymbol{#1}',1, 'w'],
+                      x: ['\\boldsymbol{#1}',1, 'x'],
+                      argmax:['\\underset{#1}{\\operatorname{argmax}}', 1],
+                      argmin:['\\underset{#1}{\\operatorname{argmin}}', 1]
+                    },
+            inlineMath: [['$', '$'], ["\\(", "\\)"]],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+          },
+      
     };
   </script>
   <script defer type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@{{ site.mathjax.version }}/es5/tex-mml-chtml.js"></script>
