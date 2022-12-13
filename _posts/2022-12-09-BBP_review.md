@@ -47,11 +47,16 @@ $$P(\hat{y}\mid\hat{\x}) = \mathbb{E}_{p(\w\mid D)}[P(\hat{y}\mid\hat{\x},\w)]$$
 $$
 \begin{align*}
 \theta^* &= \argmin{\theta} KL[q(\w\mid\theta)\mid P(\w\mid\mathcal{D})]\\
-         &= \argmin{\theta} \int q(\w\mid\theta)\log \frac{q(\w\mid\theta)}{P(\w\mid\mathcal{D})}d\w\\
-         &= \argmin{\theta} \int q(\w\mid\theta)\log \frac{q(\w\mid\theta)}{P(\w)P(\mathcal{D}\mid\w)}d\w\\
-         &= \argmin{\theta} \underbrace{KL[q(\w\mid\theta)\mid P(\w)]}_{\text{complexity cost}} - \underbrace{\mathbb{E}_{q(\w\mid\mathcal{D})}[\log P(\mathcal{D}\mid\w)]}_{\text{likelihood cost}}
+         &= \argmin{\theta} \mathbb{E}_{q(\w\mid\theta)}[\log q(\w\mid\theta) - \log P(\w\mid\mathcal{D})]\\
+         &= \argmin{\theta} \mathbb{E}_{q(\w\mid\theta)}[\log q(\w\mid\theta) - \log P(\w,\mathcal{D})] + \log P(\mathcal{D})\\
+         &= \argmin{\theta} \mathbb{E}_{q(\w\mid\theta)}[\log q(\w\mid\theta) - \log P(\mathcal{D}\mid\w) - \log P(\w)] + \log P(\mathcal{D})\\
+         &= \argmin{\theta} KL[q(\w\mid\theta)\mid P(\w)] - \mathbb{E}_{q(\w\mid\mathcal{D})}[\log P(\mathcal{D}\mid\w)] + \log P(\mathcal{D})\\
+         &= \argmin{\theta} \underbrace{KL[q(\w\mid\theta)\mid P(\w)]}_{\text{complexity cost}} - \underbrace{\mathbb{E}_{q(\w\mid\mathcal{D})}[\log P(\mathcal{D}\mid\w)]}_{\text{likelihood cost}} = -\text{ELBO}
 \end{align*}
 $$
+
+We can find the relation $\log P(\mathcal{D}) - KL[q(\w\mid\theta)\mid P(\w\mid\mathcal{D})] = \text{ELBO}$  where $P(\mathcal{D}) = \int P(\w\mid\mathcal{D})P(\w)d\w$ is model evidence which is usually intractable and $\log P(\mathcal{D})$ is not related to the parameter $\theta$. Hence, minimization of KL divergence is equivalent to maximization of ELBO, which let us avoid computing the model evidence.
+
 
 We denote it as:
 
