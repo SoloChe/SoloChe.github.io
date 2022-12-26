@@ -7,8 +7,13 @@
             packages: {'[+]': ['configmacros']},
             macros: {
                       RR: '{\\bf R}',
-                      w: ['\\boldsymbol{#1}',1, 'w'],
-                      x: ['\\boldsymbol{#1}',1, 'x'],
+                      w: '{\\boldsymbol{w}}',
+                      x: '{\\boldsymbol{x}}',
+                      nbr: ['\\left(#1\\right)',1],
+                      sbr: ['\\left[#1\\right]',1],
+                      bm: ['\\boldsymbol{#1}',1, ],
+                      bs: ['\\boldsymbol{#1}',1, ],
+                      N: '{\\mathcal{N}}',
                       argmax:['\\underset{#1}{\\operatorname{argmax}}', 1],
                       argmin:['\\underset{#1}{\\operatorname{argmin}}', 1]
                     },
