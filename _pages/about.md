@@ -17,7 +17,7 @@ selected_papers: true # includes a list of papers marked as "selected={true}"
 social: true  # includes social icons at the bottom of the page
 ---
 
-<p style="text-align: justify;"> I'm currently a PhD candidate in the Department of Systems Science and Industrial Engineering (SSIE) at the Binghamton University and expected to graduate Fall 2022 or Spring 2023. My resume can be found <a href='assets/pdf/Industrial_Resume.pdf'>Here</a>.
+<p style="text-align: justify;"> I'm currently a PhD candidate in the Department of Systems Science and Industrial Engineering (SSIE) at the Binghamton University and expected to graduate Fall 2022 or Spring 2023. <strong>My resume can be found <a href='assets/pdf/Industrial_Resume.pdf'>Here</a>.</strong>
 
 <p style="text-align: justify;"> <strong>Research: </strong> I'm interested in Bayesian deep learning and Gaussian process with its variations, e.g., sparse Gaussian process, deep Gaussian process, Gaussian process latent variable model and conditional density estimation. One of my main application is active learning. 
 

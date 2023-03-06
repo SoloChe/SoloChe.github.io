@@ -148,7 +148,7 @@ $$
 \mathcal{F_i(\mathcal{D},\theta)}_ = \frac{1}{M}KL[q(\w\mid\theta)\mid P(w)] - \mathbb{E}_{q(\w\mid\theta)}[\log P(\mathcal{D}\mid\w)]
 $$
 
-It can be used together with ['local parameterization technique'](2022-12-26-LRT.md).
+It can be used together with ['local parameterization technique'](/blog/2022/LRT/).
 
 
 
