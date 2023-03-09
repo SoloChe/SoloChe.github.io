@@ -2,7 +2,7 @@
  * Themes
  ******************************************************************************/
  
-:root {
+ :root {
   --global-bg-color: #{$white-color};
   --global-code-bg-color: #{$code-bg-color-light};
   --global-text-color: #{$black-color};
@@ -24,6 +24,7 @@
     padding-top: 12px;
     display : block;
   }
+
   .repo-img-light {
     display: block;
   }
@@ -54,6 +55,7 @@ html[data-theme='dark'] {
   .fa-moon {
     display : none;
   }
+
   .repo-img-light {
     display: none;
   }
