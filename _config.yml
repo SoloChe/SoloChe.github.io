@@ -211,7 +211,7 @@ jekyll-archives:
     tag: '/blog/tag/:name/'
     category: '/blog/category/:name/'
 
-display_tags: ['Bayes', 'Deep-Learning', 'GP', 'CV', 'NLP', 'Multimodal-Learning']
+display_tags: ['Bayes', 'Deep-Learning', 'Diffusion-Model', 'GP', 'CV', 'NLP', 'Multimodal-Learning']
 
 # -----------------------------------------------------------------------------
 # Jekyll Scholar
