@@ -48,7 +48,7 @@ $$
 \end{align}\\ 
 $$
 
-where $\bar{\alpha}_{t} = \prod_{i=1}^t \alpha_i $. Usually, $\alpha_i$ will decrease along with the time $t$, and therefore $\bar{\alpha}_t \rightarrow 0$ when $t \rightarrow \infty$. 
+where $\bar{\alpha}_ t = \prod_{i=1}^t \alpha_i $. Usually, $\alpha_i$ will decrease along with the time $t$, and therefore $\bar{\alpha}_t \rightarrow 0$ when $t \rightarrow \infty$. 
 
 
 ## Reverse Process
