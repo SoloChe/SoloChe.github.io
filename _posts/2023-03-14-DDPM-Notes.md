@@ -102,7 +102,7 @@ L &= \mathbb{E}_{\x_{1:T}\sim q(\x_{1:T}\mid\x_0)}\sbr{\log \frac{q(\x_{1:T}\mid
   &= \mathbb{E}_{\x_{1:T}\sim q(\x_{1:T}\mid\x_0)}\sbr{-\log p_\theta(\x_T) + \sum_{t=2}^T\log \nbr{\frac{q(\x_{t-1}\mid\x_{t},\x_0)}{p_\theta(\x_{t-1}\mid\x_t)}\frac{q(\x_t\mid\x_0)}{q(\x_{t-1}\mid\x_0)}} + \log\frac{q(\x_1\mid\x_0)}{p_\theta(\x_0\mid\x_1)}}\\
   &= \mathbb{E}_{\x_{1:T}\sim q(\x_{1:T}\mid\x_0)}\sbr{-\log p_\theta(\x_T) + \sum_{t=2}^T\log \frac{q(\x_{t-1}\mid\x_{t},\x_0)}{p_\theta(\x_{t-1}\mid\x_t)} + \log \frac{q(\x_T\mid\x_0)}{q(\x_{1}\mid\x_0)} + \log\frac{q(\x_1\mid\x_0)}{p_\theta(\x_0\mid\x_1)}}\\
   &= \mathbb{E}_{\x_{1:T}\sim q(\x_{1:T}\mid\x_0)}\sbr{\log \frac{q(\x_T\mid\x_0)}{p_\theta(\x_T)} + \sum_{t=2}^T\log \frac{q(\x_{t-1}\mid\x_{t},\x_0)}{p_\theta(\x_{t-1}\mid\x_t)}  - \log p_\theta(\x_0\mid\x_1)}\\
-  &= \underbrace{KL\sbr{q(\x_T\mid\x_0)\mid p_\theta(\x_T)}}_{L_T} + \sum_{t=2}^T \underbrace{KL\sbr{q(\x_{t-1}\mid\x_{t},\x_0)\mid p_\theta(\x_{t-1}\mid\x_t)}}_{L_{t}} - \underbrace{\mathbb{E}_{\x_{1}\sim q(\x_{1}\mid\x_0)}\sbr{\log p_\theta(\x_0\mid\x_1)}}_{L_0}
+  &= \underbrace{KL\sbr{q(\x_T\mid\x_0)\mid p_\theta(\x_T)}}_{L_T} + \sum_{t=2}^T \underbrace{\mathbb{E}_{\x_t\sim q(\x_t\mid\x_0)}\sbr{KL\sbr{q(\x_{t-1}\mid\x_{t},\x_0)\mid p_\theta(\x_{t-1}\mid\x_t)}}}_{L_{t}} - \underbrace{\mathbb{E}_{\x_{1}\sim q(\x_{1}\mid\x_0)}\sbr{\log p_\theta(\x_0\mid\x_1)}}_{L_0}
 \end{align*}
 $$
 
