@@ -18,6 +18,10 @@
 - title: Experience
   type: time_table
   contents:
+    - title: Postdoctoral Research Fellow
+      institution: Wu Lab, Arizona State University
+      year: 2023 - Present
+
     - title: Research Assistant
       institution: SUNY Research Foundation, Binghamton University
       year: 2019 - 2023
@@ -27,6 +31,9 @@
 - title: Honors and Awards
   type: time_table
   contents:
+    - year: 2023
+      items: 
+        - Excellence in Systems Science Research Award, Binghamton University
     - year: 2022
       items: 
         - Graduate School Travel Grant, Binghamton University
