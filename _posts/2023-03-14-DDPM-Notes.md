@@ -7,7 +7,7 @@ comments: true
 tags: Bayes Deep-Learning Diffusion-Model
 ---
 
-[last updated on 03/09/2023]: Forward, Reverse and Training
+[last updated on 05/19/2023]: Score Function
 
 - [General Overview of Denoising Diffusion Probabilistic Models (DDPM)](#general-overview-of-denoising-diffusion-probabilistic-models-ddpm)
   - [Forward Diffusion](#forward-diffusion)
@@ -16,16 +16,27 @@ tags: Bayes Deep-Learning Diffusion-Model
     - [Parameterization on $L\_t$](#parameterization-on-l_t)
     - [$L\_T$ and $L\_0$](#l_t-and-l_0)
   - [Implementation](#implementation)
+- [Connection with DDIM Sampler](#connection-with-ddim-sampler)
+- [Connection with Score-based DM](#connection-with-score-based-dm)
+  - [What is Score and Score Matching?](#what-is-score-and-score-matching)
+  - [Noise Conditional Score Networks (NCSN)](#noise-conditional-score-networks-ncsn)
+  - [Langevin Dynamics for Sampling](#langevin-dynamics-for-sampling)
+    - [Langevin Dynamics](#langevin-dynamics)
+- [Unified Framework by Stochastic Differential Equations (SDE)](#unified-framework-by-stochastic-differential-equations-sde)
+  - [Forward](#forward)
+  - [Reverse](#reverse)
+    - [Sampling](#sampling)
   - [Reference](#reference)
 
 # General Overview of Denoising Diffusion Probabilistic Models (DDPM)
 
 Some good reviews:
-1. [How diffusion models work: the math from scratch](https://theaisummer.com/diffusion-models/?fbclid=IwAR1BIeNHqa3NtC8SL0sKXHATHklJYphNH-8IGNoO3xZhSKM_GYcvrrQgB0o) [1]
-2. [What are Diffusion Models?](https://lilianweng.github.io/posts/2021-07-11-diffusion-models/) [2]
+1. [How diffusion models work: the math from scratch](https://theaisummer.com/diffusion-models/?fbclid=IwAR1BIeNHqa3NtC8SL0sKXHATHklJYphNH-8IGNoO3xZhSKM_GYcvrrQgB0o) 
+2. [What are Diffusion Models?](https://lilianweng.github.io/posts/2021-07-11-diffusion-models/) 
+3. [Generative Modeling by Estimating Gradients of the Data Distribution](https://yang-song.net/blog/2021/score/)
 
 ## Forward Diffusion
-The original data $\x_0\sim q(\x)$ and the Markov chain assumes we add noise to the data $\x_0$ in each time step $t$ and then we get a new conditional distribution
+The original data $\x_0\sim q(\x)$ and the Markov chain assumes we add noise to the data $\x_0$ in each time step $t\in[1,T]$ and then we get a new conditional distribution
 $$q(\x_t\mid \x_{t-1})\sim \N\nbr{\x_t\mid \bm{\mu}_t = \sqrt{1-\beta_t}\x_{t-1}, \bm{\Sigma}_t = \beta_t\bm{I}}$$
 
 A closed form of dependence according to the reparameterization trick:
@@ -48,7 +59,7 @@ $$
 \end{align}\\ 
 $$
 
-where $\bar{\alpha}_ t = \prod_{i=1}^t \alpha_i $. Usually, $\alpha_i$ will decrease along with the time $t$, and therefore $\bar{\alpha}_t \rightarrow 0$ when $t \rightarrow \infty$. 
+where $\bar{\alpha}_ t = \prod_{i=1}^t \alpha_i $. Usually, $\alpha_i$ will decrease along with $t$, and therefore $\bar{\alpha}_t \rightarrow 0$ when $t \rightarrow \infty$. For the joint, $q(\x_{1:T}\mid\x_0) = \prod_{i=1}^Tq(\x_t\mid\x_{t-1})$.
 
 
 ## Reverse Process
@@ -136,9 +147,10 @@ $$
 Eq. (3) is further reduced to Eq. (4) where the weight term is removed for better sample quality [4].
 
 $$
-L_{\text{simple}}(\theta) := \mathbb{E}_{\x_0, \bm{\epsilon}} \sbr{\|\boldsymbol{\epsilon}_t - \bm{\epsilon}_\theta(\sqrt{\bar{\alpha}_t}\x_{0} + \sqrt{1-\bar{\alpha}_{t}} \bm{\epsilon}_t, t)\|^2}
+L_{\text{simple}}(\theta) := \mathbb{E}_{\x_0, \bm{\epsilon}} \sbr{\|\bm{\epsilon}_t - \bm{\epsilon}_\theta(\sqrt{\bar{\alpha}_t}\x_{0} + \sqrt{1-\bar{\alpha}_{t}} \bm{\epsilon}_t, t)\|^2}
 $$
 
+Note that the model (U net) is used to approximate the noise $\bm{\epsilon}_t$ and it can be also used to predict $\x_0$ directly.
 ### $L_T$ and $L_0$ 
 
 $L_T$ is considered a constant and ignored in the training ($\beta_t$ is fixed). $L_0$ can be regraded as reconstruction error (VAE settings). 
@@ -155,6 +167,72 @@ $L_T$ is considered a constant and ignored in the training ($\beta_t$ is fixed).
 <div class="caption">
       Traning and sampling process (Image Source [4])
 </div>
+
+# Connection with DDIM Sampler
+
+# Connection with Score-based DM
+
+## What is Score and Score Matching?
+
+Score of a probability density function $p_{\bm{\theta}}(\x)$ is defined as $\nabla_{\x}\log p_{\bm{\theta}}$. The PDF is usually with the form $p_{\bm{\theta}} = \frac{\exp \nbr{-E_{\bm{\theta}}\nbr{\x}}}{Z_\theta}$ where $E_{\bm{\theta}}$ is a nonlinear regression function with parameter $\bm{\theta}$, which is called the energy. For example, if $p_{\bm{\theta}}$ is Gaussian distributed, $E_{\bm{\theta}} = -\frac{1}{2\sigma^2}\nbr{\x-\bm{\mu}}^2$ and $\nabla_{\x}\log p_{\bm{\theta}} = -\frac{\x-\bm{\mu}}{\sigma^2} = -\frac{\bm{\epsilon}}{\sigma}$ (standardization).
+
+We want to learn an model $p_{\bm{\theta}}$ to capture the data distribution $p_{data}(\x)$, If $\nabla_{\x}\log p_{\bm{\theta}} = \nabla_{\x}\log p_{data}(\x)$, then $p_{\bm{\theta}} \equiv p_{data}(\x)$. For score matching, we minimize the Fisher Divergence
+
+$$
+D_F\sbr{p_{data}\mid p_{\bm{\theta}}} = \mathbb{E}_{p_{data}}\sbr{\frac{1}{2}\lVert\nabla_{\x}\log p_{data}(\x) - \nabla_{\x}\log p_{\bm{\theta}}(\x)\rVert^2}.
+$$
+
+However, $p_{data}$ is unknown. It can be further written as 
+
+$$D_F\sbr{p_{data}\mid p_{\bm{\theta}}} = \mathbb{E}_{p_{data}}\sbr{Tr(\nabla_{\x}^2\log p_{\bm{\theta}}(\x)) + \frac{1}{2}\lVert\nabla_{\x}\log p_{\bm{\theta}}(\x)\rVert^2}+ Constant$$ 
+
+to get rid of the unknown $p_{data}$. It raises another problem that the computation of the second derivative is inefficient (quadratic in the dimensionality), which cannot be scaled to high dimensionality.
+
+To circumvent the computation of $Tr(\nabla_{\x}^2\log p_{\bm{\theta}}(\x))$, we can user either **Denoising Score Matching** or **Sliced score matching**. Here, we focus on the former which is used in **Noise Conditional Score Networks**. The idea is that we purturb the data $\x$ with a pre-specified noise distribution $q_{\sigma}(\tilde{\x}\mid\x)$ and minimize
+
+$$
+D_F\sbr{q_{\sigma}\mid p_{\bm{\theta}}} = \mathbb{E}_{q_{\sigma}}\mathbb{E}_{p_{data}}\sbr{\frac{1}{2}\lVert\nabla_{\x}\log p_{\bm{\theta}}(\x) - \nabla_{\x} q_{\sigma}(\tilde{\x}\mid\x)\rVert^2}.
+$$
+
+Note that $\nabla_{\x}\log p_{\bm{\theta}}(\x) = \nabla_{\x} q_{\sigma}(\tilde{\x}\mid\x) \approx \nabla_{\x}\log p_{data}(\x)$ is true only when the noise level $\sigma$ is small enough, which leads to $p_{\bm{\theta}}(\x) \approx p_{data}(\x)$. There are also two problems:
+
+- Inaccurate score estimation in low data density
+- Slow mixing of Langevin dynamics
+
+## Noise Conditional Score Networks (NCSN)
+
+To address these two issues, NCSN perturb the data in multiple steps.
+
+## Langevin Dynamics for Sampling
+
+- $\bm{s_\theta}:\mathbb{R}^D \rightarrow \mathbb{R}^D$: network trained to approximate the score of $p_{data}(\x)$
+
+### Langevin Dynamics
+$$
+\x_{i+1} \leftarrow \x_i + \epsilon\nabla_{\x}\log p(\x) + \sqrt{2\epsilon}\bm{z}_i \quad i=0,1,...,T,
+$$
+where $\bm{z}_i\sim\N\nbr{\bm{0},\bm{I}}$. 
+
+# Unified Framework by Stochastic Differential Equations (SDE)
+## Forward
+$$
+d\x = \f(\x, t)dt + g(t)d\w
+$$
+
+- $\w$: standard Wiener process
+- $\f(\cdot,t): \mathbb{R}^D \rightarrow \mathbb{R}^D$ drift coefficient
+- $g(\cdot): \mathbb{R} \rightarrow \mathbb{R}$ diffusion coefficient of $\x_t$
+
+## Reverse
+$$
+d\x = \sbr{\f(\x,t) - g(t)^2\nabla_{\x}\log p_t(\x)} + g(t)d\bar{\w}
+$$
+
+### Sampling
+
+- General Numerical SDE Solver
+- Predictor-corrector Sampler
+- ODE Solver
 
 ## Reference
 [1] L. Weng, “What are diffusion models?,” lilianweng.github.io, Jul. 2021, [Online]. Available: https://lilianweng.github.io/posts/2021-07-11-diffusion-models/
