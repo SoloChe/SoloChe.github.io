@@ -7,7 +7,7 @@ comments: true
 tags: Bayes Deep-Learning Diffusion-Model
 ---
 
-[last updated on 05/19/2023]: Score Function
+[last updated on 05/20/2023]: part of DDIM
 
 - [General Overview of Denoising Diffusion Probabilistic Models (DDPM)](#general-overview-of-denoising-diffusion-probabilistic-models-ddpm)
   - [Forward Diffusion](#forward-diffusion)
@@ -16,7 +16,8 @@ tags: Bayes Deep-Learning Diffusion-Model
     - [Parameterization on $L\_t$](#parameterization-on-l_t)
     - [$L\_T$ and $L\_0$](#l_t-and-l_0)
   - [Implementation](#implementation)
-- [Connection with DDIM Sampler](#connection-with-ddim-sampler)
+- [Connection with DDIM](#connection-with-ddim)
+  - [Accelerated Inference](#accelerated-inference)
 - [Connection with Score-based DM](#connection-with-score-based-dm)
   - [What is Score and Score Matching?](#what-is-score-and-score-matching)
   - [Noise Conditional Score Networks (NCSN)](#noise-conditional-score-networks-ncsn)
@@ -37,6 +38,7 @@ Some good reviews:
 
 ## Forward Diffusion
 The original data $\x_0\sim q(\x)$ and the Markov chain assumes we add noise to the data $\x_0$ in each time step $t\in[1,T]$ and then we get a new conditional distribution
+
 $$q(\x_t\mid \x_{t-1})\sim \N\nbr{\x_t\mid \bm{\mu}_t = \sqrt{1-\beta_t}\x_{t-1}, \bm{\Sigma}_t = \beta_t\bm{I}}$$
 
 A closed form of dependence according to the reparameterization trick:
@@ -59,7 +61,12 @@ $$
 \end{align}\\ 
 $$
 
-where $\bar{\alpha}_ t = \prod_{i=1}^t \alpha_i $. Usually, $\alpha_i$ will decrease along with $t$, and therefore $\bar{\alpha}_t \rightarrow 0$ when $t \rightarrow \infty$. For the joint, $q(\x_{1:T}\mid\x_0) = \prod_{i=1}^Tq(\x_t\mid\x_{t-1})$.
+where $\bar{\alpha}_ t = \prod_{i=1}^t \alpha_i $. Usually, $\alpha_i$ will decrease along with $t$, and therefore $\bar{\alpha}_t \rightarrow 0$ when $t \rightarrow \infty$. For the joint, 
+
+$$
+q(\x_{1:T}\mid\x_0) = \prod_{i=1}^T q(\x_t\mid\x_{t-1})
+$$
+
 
 
 ## Reverse Process
@@ -168,7 +175,40 @@ $L_T$ is considered a constant and ignored in the training ($\beta_t$ is fixed).
       Traning and sampling process (Image Source [4])
 </div>
 
-# Connection with DDIM Sampler
+# Connection with DDIM 
+DDIM is proposed to accelerate the inference of DDPM. The formulation is slightly different but the training is proved to be the same. The difference is the inference which is more efficient compared to DDPM. 
+
+The forward process is non-Markovian. Consider a family $Q$, indexed by a real vector $\sigma\in\R^T$, the joint is now conditioned on $\x_0$: $q_\sigma(\x_{1:T}\mid\x_0) = q_\sigma(\x_T\mid\x_0)\prod_{i=2}^Tq_\sigma(\x_{t-1}\mid\x_{t},\x_0)$ where 
+
+$$
+\begin{equation}
+q_\sigma(\x_{t-1}\mid\x_{t},\x_0) = \N\nbr{\sqrt{\bar{\alpha}_{t-1}}\x_0 + \sqrt{1-\bar{\alpha}_{t-1}-\sigma_t^2}\frac{\x_t-\sqrt{\bar{\alpha}_{t}}\x_0}{\sqrt{1-\bar{\alpha}_{t}}},\sigma_t^2\bm{I}}
+\end{equation}
+$$
+
+The Eq. (4) is selected to satisfy the joint and $q_\sigma(\x_t\mid\x_0) = \N\nbr{\sqrt{\bar{\alpha}_t}, (1-\bar{\alpha}_t)\bm{I}}$.
+
+The forward process is obtained by $q_\sigma(\x_t\mid\x_{t-1},\x_0) = \frac{q_\sigma(\x_{t-1}\mid\x_{t},\x_0)q_\sigma(\x_t\mid\x_0)}{q_\sigma(\x_{t-1}\mid\x_0)}$. It is also Gaussian and the magnitude controls the randomness in the forward process. We don't need to know the form of this because it is not used. 
+
+The reverse process is similar to the DDPM. The generative process $p_\theta(\x_{0:T})$ is used to approximate the reverse process $q_\sigma(\x_{t-1}\mid\x_{t},\x_0)$ by minimization of KL-divergence and the training is the same as DDPM. We can let the model (U-net) predict either $\x_0$ directly or the noise $\bm{\epsilon}_t$. For example, 
+
+$$
+f_\theta(\x_t) = \frac{\x_t-\sqrt{1-\bar{\alpha}_t}\bm{\epsilon}^{t}_{\theta}(\x_t)}{\sqrt{\bar{\alpha}_t}} = \tilde{\x}_0
+$$
+
+ According to Eq. (6),
+
+$$
+\begin{align}
+\x_{t-1} &= \sqrt{\bar{\alpha}_{t-1}}\tilde{\x}_0 + \sqrt{1-\bar{\alpha}_{t-1}-\sigma_t^2}\frac{\x_t-\sqrt{\bar{\alpha}_{t}}\tilde{\x}_0}{\sqrt{1-\bar{\alpha}_{t}}} + \sigma_t\bm{\epsilon}\\
+&= \sqrt{\bar{\alpha}_{t-1}}\nbr{\frac{\x_t-\sqrt{1-\bar{\alpha}_t}\bm{\epsilon}^t_\theta(\x_t)}{\sqrt{\bar{\alpha}_{t}}}} + \sqrt{1-\bar{\alpha}_{t}-\sigma_t^2}\bm{\epsilon}^t_\theta(\x_t) + \sigma_t\bm{\epsilon}
+\end{align}
+$$
+
+$\sigma_t$ is set to $0$ in DDIM and the forward process becomes deterministic and the reverse process becomes implicit probabilistic model.
+
+## Accelerated Inference
+
 
 # Connection with Score-based DM
 
