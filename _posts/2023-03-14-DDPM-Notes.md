@@ -208,6 +208,7 @@ $$
 $\sigma_t$ is set to $0$ in DDIM and the forward process becomes deterministic and the reverse process becomes implicit probabilistic model.
 
 ## Accelerated Inference
+The main idea is that even though we need to go through every forward steps, only a small number of steps are required to sample in reverse process. The forward process can be only depend on a subset $\{\x_{\tau_1},...,\x_{\tau_S}\}\subset\{\x_1,...,\x_T\}$ because we let $\sigma_t = 0$ and the forward process is deterministic.
 
 
 # Connection with Score-based DM

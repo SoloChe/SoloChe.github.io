@@ -19,12 +19,12 @@ social: true  # includes social icons at the bottom of the page
 
 <p style="text-align: justify;"> Yiming Che, PhD, is a postdoctoral research fellow in  <a href="https://labs.engineering.asu.edu/wulab/">Wu Lab</a> at ASU. <strong>My resume can be found <a href='assets/pdf/Industrial_Resume.pdf'>Here</a>.</strong>
 
-<p style="text-align: justify;"> <strong>Research: </strong> I'm interested in Bayesian deep learning and Gaussian process with its variations, e.g., sparse Gaussian process, deep Gaussian process, Gaussian process latent variable model and conditional density estimation. I'm also interested in generative model, e.g., diffusion model.
+<p style="text-align: justify;"> <strong>Research: </strong> I'm currently interested in generative model, e.g., medical imaging with diffusion model, Bayesian deep learning, Gaussian process and active learning. 
 
 <p style="text-align: justify;"> <strong>Current Work: </strong>
 <ul>
-<li> Combination of Bayesian framework and physics-informed neural network (PINN)</li>
-<li> Diffusion model based anomaly detection and segmentation</li>
+<li> Diffusion model for medical imaging segmentation</li>
+<li> Diffusion model for image-to-image translation in medical imaging</li>
 </ul>
 
 <!-- <p style="text-align: justify;"> <strong>I'm actively seeking opportunities as Machine Learning (Research) Engineer.</strong> -->
