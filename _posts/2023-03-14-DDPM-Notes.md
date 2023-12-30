@@ -37,9 +37,14 @@ Some good reviews:
 3. [Generative Modeling by Estimating Gradients of the Data Distribution](https://yang-song.net/blog/2021/score/)
 
 ## Forward Diffusion
-The original data $\x_0\sim q(\x)$ and the Markov chain assumes we add noise to the data $\x_0$ in each time step $t\in[1,T]$ and then we get a new conditional distribution
+The original data $\x_0\sim q(\x_0)$ and the Markov chain assumes we add noise to the data $\x_0$ in each time step $t\in[1,T]$ with transition kernel $q(\x_t\mid\x_{t-1})$ which is usually handcrafted as 
 
-$$q(\x_t\mid \x_{t-1})\sim \N\nbr{\x_t\mid \bm{\mu}_t = \sqrt{1-\beta_t}\x_{t-1}, \bm{\Sigma}_t = \beta_t\bm{I}}$$
+$$
+q(\x_t\mid\x_{t-1}) = \N\nbr{\x_t;\sqrt{1-\beta_t}\x_{t-1},\beta_t\I}
+$$
+
+where $\beta_t\in (0,1)$ is a hyperparameter. 
+
 
 A closed form of dependence according to the reparameterization trick:
 
