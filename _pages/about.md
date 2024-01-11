@@ -25,6 +25,7 @@ social: true  # includes social icons at the bottom of the page
 <ul>
 <li> Diffusion model for brain tumor segmentation</li>
 <li> Headache Classification (T1 MRI)</li>
+<li> Multi-modality Fusion for Diagnosis</li>
 </ul>
 
 <!-- <p style="text-align: justify;"> <strong>I'm actively seeking opportunities as Machine Learning (Research) Engineer.</strong> -->
