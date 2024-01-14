@@ -28,4 +28,3 @@ social: true  # includes social icons at the bottom of the page
 <li> Multi-modality fusion for diagnosis</li>
 </ul>
 
-<!-- <p style="text-align: justify;"> <strong>I'm actively seeking opportunities as Machine Learning (Research) Engineer.</strong> -->
