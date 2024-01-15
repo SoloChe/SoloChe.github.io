@@ -19,8 +19,11 @@
   type: time_table
   contents:
     - title: Postdoctoral Research Fellow
-      institution: Wu Lab, Arizona State University
+      institution: <a href="https://labs.engineering.asu.edu/wulab/" target="_blank">Wu Lab</a>, Arizona State University
+      description: Advised by <a href="https://faculty.engineering.asu.edu/twu/" target="_blank">Dr. Teresa Wu</a>
+        
       year: 2023 - Present
+
 
     - title: Research Assistant
       institution: SUNY Research Foundation, Binghamton University

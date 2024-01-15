@@ -41,7 +41,7 @@ repo_theme_dark: dark           # https://github.com/anuraghazra/github-readme-s
 # will use title and url fields
 # Take a look to https://github.com/jekyll/jekyll-feed for more customization
 
-rss_icon: true
+rss_icon: false
 
 # -----------------------------------------------------------------------------
 # Layout
@@ -97,7 +97,7 @@ panelbear_analytics:  # panelbear analytics site ID (format: XXXXXXXXX)
 # -----------------------------------------------------------------------------
 
 blog_name: Yiming's blog  # your blog must have a name for it to show up in the nav bar
-blog_description: I share posts in terms of machine learning/deep learning with special focus on Bayesian framework.
+blog_description: I share knowledge in terms of machine learning/deep learning with special focus on Bayesian framework.
 permalink: /blog/:year/:title/
 
 # Pagination
