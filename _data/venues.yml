@@ -2,6 +2,14 @@
   url: https://www.sciencedirect.com/journal/physica-a-statistical-mechanics-and-its-applications
   color: "#00369f"
 
+"Physica D":
+  url: https://www.sciencedirect.com/journal/physica-d-nonlinear-phenomena
+  color: "#00369f"
+
+"QREI":
+  url: https://onlinelibrary.wiley.com/journal/10991638
+  color: "#00369f"
+
 "J. Comput. Phys.":
   url: https://www.sciencedirect.com/journal/journal-of-computational-physics
 
