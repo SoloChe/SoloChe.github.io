@@ -23,8 +23,8 @@ social: true  # includes social icons at the bottom of the page
 
 <p style="text-align: justify;"> <strong>Current Work: </strong>
 <ul>
-<li> Diffusion model for brain tumor segmentation</li>
+<li> Weakly-supervised brain tumor segmentation</li>
 <li> Interpretable classification with generative models</li>
-<li> Multi-modality fusion for diagnosis</li>
+<li> Multi-modality fusion for traumatic brain injury diagnosis</li>
 </ul>
 
