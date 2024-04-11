@@ -59,10 +59,11 @@
       items:
         - National Scholarship, Capital University of Economics and Business
 
+
 - title: Professional Services
-  type: time_table
+  type: map
   contents:
-    - year: 2022 - Present
-      items: 
-        - Journal Reviewer&#58; Physica D 
-        - Conference Reviewer&#58; CASE, IISE 
+    - name: Journal Reviewer
+      value: Physica D Nonlinear Phenomena   
+    - name: Conference Reviewer
+      value: MICCAI, CASE
