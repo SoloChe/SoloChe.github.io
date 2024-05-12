@@ -1,13 +1,14 @@
 ---
 layout: post
-title: Notes of Diffusion Model 
+title: Notes of Diffusion Models 
 date: 2023-03-05 20:00:00-0400
-description: some notes of diffusion model
+description: basics of diffusion models
 comments: true
 tags: Bayes Deep-Learning Diffusion-Model
 ---
 
-[last updated on 05/20/2023]: modified DDIM and next would be the connection with score-based DM.
+**Last update on 05/12/2024:** Updated DDIM and the next update would be the connection with score-based DM and neural ODEs.
+
 
 **Table of Contents**
 - [Revisit of Denoising Diffusion Probabilistic Models (DDPM)](#revisit-of-denoising-diffusion-probabilistic-models-ddpm)
