@@ -7,8 +7,9 @@ comments: true
 tags: Bayes Deep-Learning Diffusion-Model
 ---
 
-[last updated on 05/20/2023]: modify DDPM  
+[last updated on 05/20/2023]: modified DDPM 
 
+**Table of Contents**
 - [Revisit of Denoising Diffusion Probabilistic Models (DDPM)](#revisit-of-denoising-diffusion-probabilistic-models-ddpm)
   - [DDPM Formulation](#ddpm-formulation)
   - [DDPM Forward Process (Encoding)](#ddpm-forward-process-encoding)
@@ -36,6 +37,7 @@ Some good reviews:
 2. [What are Diffusion Models?](https://lilianweng.github.io/posts/2021-07-11-diffusion-models/) 
 3. [Generative Modeling by Estimating Gradients of the Data Distribution](https://yang-song.net/blog/2021/score/)
 4. [Understanding Diffusion Models: A Unified Perspective](https://ar5iv.labs.arxiv.org/html/2208.11970)
+   
 ## DDPM Formulation
 Given the data distribution $\x_0\sim q(\x_0)$ which is unknown, we want to learn an approximation $p_\theta (\x_0)$ that we can sample from. It is similar to variational autoencoder (VAE) or hierarchical VAE in the form, e.g., it also has encoding process (forward process) and decoding process (reverse process) and minimizes ELBO, but with multiple high dimensional latent variables.
 
@@ -96,7 +98,7 @@ where $\bar{\alpha}_ t = \prod_{i=1}^t \alpha_i $. Usually, $\alpha_i$ will decr
 To generate a new sample or reverse from $\x_T\sim\N(0,\I)$, we need to know $q(\x_{t-1} \mid \x_t)$ which is unavailable in practice. However, we know it is also Gaussian according to the Bayes' theorem. To make it tractable, we use $q(\x_{t-1} \mid \x_t, \x_0)$ which is conditioned on $\x_0$, which can be written as
 
 $$
-q(\x_{t-1} \vert \x_t, \x_0) = q(\x_t\mid\x_{t-1},\x_0)\frac{q(\x_{t-1}\mid\x_0)}{q(\x_t\mid\x_0)} = \mathcal{N}(\x_{t-1}; \color{blue}{\tilde{\boldsymbol{\mu}}}(\x_t, \x_0), \color{red}{\tilde{\beta}_t} \mathbf{I}),
+q(\x_{t-1} \vert \x_t, \x_0) = q(\x_t\mid\x_{t-1},\x_0)\frac{q(\x_{t-1}\mid\x_0)}{q(\x_t\mid\x_0)} = \mathcal{N}(\x_{t-1}; \color{blue}{\tilde{\bm{\mu}}}(\x_t, \x_0), \color{red}{\tilde{\beta}_t} \mathbf{I}),
 $$ 
 
 where
@@ -105,10 +107,10 @@ $$
 \begin{align}
 \tilde{\beta}_t 
 &= \frac{1 - \bar{\alpha}_{t-1}}{1 - \bar{\alpha}_t} \cdot \beta_t \nonumber\\
-\tilde{\boldsymbol{\mu}}_t (\x_t, \x_0)
+\tilde{\bm{\mu}}_t (\x_t, \x_0)
 &= \frac{\sqrt{\alpha_t}(1 - \bar{\alpha}_{t-1})}{1 - \bar{\alpha}_t} \x_t + \frac{\sqrt{\bar{\alpha}_{t-1}}\beta_t}{1 - \bar{\alpha}_t} \x_0 \nonumber\\
-&= \frac{1}{\sqrt{\alpha_t}} \Big( \x_t - \frac{1 - \alpha_t}{\sqrt{1 - \bar{\alpha}_t}} \boldsymbol{\epsilon}_t \Big)
-= \tilde{\boldsymbol{\mu}}_t
+&= \frac{1}{\sqrt{\alpha_t}} \Big( \x_t - \frac{1 - \alpha_t}{\sqrt{1 - \bar{\alpha}_t}} \bm{\epsilon}_t \Big)
+= \tilde{\bm{\mu}}_t
 \end{align}
 $$
 with $\x_0 = \frac{1}{\sqrt{\bar{\alpha}_t}}(\x_t - \sqrt{1 - \bar{\alpha}_t}\bm{\epsilon}_t)$ (derived from Eq. (1)). The details of derivations can be found [here](https://lilianweng.github.io/posts/2021-07-11-diffusion-models/) (complete the square). 
@@ -155,15 +157,15 @@ In the above case, the $\bm{\epsilon}_\theta(\x_t, t)$ is the output of the back
 The KL divergence between two Gaussian: 
 
 $$
-_{KL}(p||q) = \frac{1}{2}\left[\log\frac{|\Sigma_q|}{|\Sigma_p|} - d + (\boldsymbol{\mu_p}-\boldsymbol{\mu_q})^T\Sigma_q^{-1}(\boldsymbol{\mu_p}-\boldsymbol{\mu_q}) + tr\left\{\Sigma_q^{-1}\Sigma_p\right\}\right]
+_{KL}(p||q) = \frac{1}{2}\left[\log\frac{|\Sigma_q|}{|\Sigma_p|} - d + (\bm{\mu_p}-\bm{\mu_q})^T\Sigma_q^{-1}(\bm{\mu_p}-\bm{\mu_q}) + tr\left\{\Sigma_q^{-1}\Sigma_p\right\}\right]
 $$
 
 We set $\bm{\Sigma}_\theta(\x_t, t) = \sigma_t^2\bm{I}$ where $\sigma_t^2 = \tilde{\beta}_t$ or $\sigma_t^2 = \beta_t$
 $$
 \begin{align}
-L_t &= \mathbb{E}_{\x_0, \bm{\epsilon}} \sbr{\frac{1}{2\sigma_t^2} \| \tilde{\boldsymbol{\mu}}_t(\x_t, \x_0) - \bm{\mu}_\theta(\x_t, t) \|^2 } \nonumber\\
-&= \mathbb{E}_{\x_0, \bm{\epsilon}} \sbr{\frac{ (1 - \alpha_t)^2 }{2 \alpha_t (1 - \bar{\alpha}_t) \sigma_t^2} \|\boldsymbol{\epsilon}_t - \bm{\epsilon}_\theta(\x_t, t)\|^2} \nonumber\\
-&= \mathbb{E}_{\x_0, \bm{\epsilon}} \sbr{\frac{ (1 - \alpha_t)^2 }{2 \alpha_t (1 - \bar{\alpha}_t) \sigma_t^2} \|\boldsymbol{\epsilon}_t - \bm{\epsilon}_\theta(\sqrt{\bar{\alpha}_t}\x_{0} + \sqrt{1-\bar{\alpha}_{t}} \bm{\epsilon}_t, t)\|^2} \\
+L_t &= \mathbb{E}_{\x_0, \bm{\epsilon}} \sbr{\frac{1}{2\sigma_t^2} \| \tilde{\bm{\mu}}_t(\x_t, \x_0) - \bm{\mu}_\theta(\x_t, t) \|^2 } \nonumber\\
+&= \mathbb{E}_{\x_0, \bm{\epsilon}} \sbr{\frac{ (1 - \alpha_t)^2 }{2 \alpha_t (1 - \bar{\alpha}_t) \sigma_t^2} \|\bm{\epsilon}_t - \bm{\epsilon}_\theta(\x_t, t)\|^2} \nonumber\\
+&= \mathbb{E}_{\x_0, \bm{\epsilon}} \sbr{\frac{ (1 - \alpha_t)^2 }{2 \alpha_t (1 - \bar{\alpha}_t) \sigma_t^2} \|\bm{\epsilon}_t - \bm{\epsilon}_\theta(\sqrt{\bar{\alpha}_t}\x_{0} + \sqrt{1-\bar{\alpha}_{t}} \bm{\epsilon}_t, t)\|^2} \\
 \end{align}
 $$
 
@@ -176,7 +178,13 @@ L_{\text{simple}}(\theta) := \mathbb{E}_{\x_0, \bm{\epsilon}} \sbr{\|\bm{\epsilo
 $$
 where the weight term is removed for better sample quality.
 
-From another perspective, $\bm{\mu}_\theta$ can be parameterized as $\bm{\mu}_\theta = \frac{\sqrt{\alpha_t}(1 - \bar{\alpha}_{t-1})}{1 - \bar{\alpha}_t} \x_t + \frac{\sqrt{\bar{\alpha}_{t-1}}\beta_t}{1 - \bar{\alpha}_t} \tilde{\x}_\theta(\x_y,t)$  where $\tilde{\x}_\theta(\x_y,t)$ is the output of the backbone model (U-net) which is used to predict the data $\x_0$ directly.
+From another perspective, $\bm{\mu}_\theta$ can be parameterized as 
+
+$$
+\bm{\mu}_\theta = \frac{\sqrt{\alpha_t}(1 - \bar{\alpha}_{t-1})}{1 - \bar{\alpha}_t} \x_t + \frac{\sqrt{\bar{\alpha}_{t-1}}\beta_t}{1 - \bar{\alpha}_t} \tilde{\x}_\theta(\x_t,t),
+$$ 
+
+where $\tilde{\x}_\theta(\x_t,t)$ is the output of the backbone model (U-net) which is used to predict the data $\x_0$ directly.
 
 ### $L_T$ and $L_0$ 
 
