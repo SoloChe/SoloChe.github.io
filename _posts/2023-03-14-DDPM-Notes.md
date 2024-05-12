@@ -7,7 +7,7 @@ comments: true
 tags: Bayes Deep-Learning Diffusion-Model
 ---
 
-[last updated on 05/20/2023]: modified DDPM 
+[last updated on 05/20/2023]: modified DDIM and next would be the connection with score-based DM.
 
 **Table of Contents**
 - [Revisit of Denoising Diffusion Probabilistic Models (DDPM)](#revisit-of-denoising-diffusion-probabilistic-models-ddpm)
@@ -95,7 +95,7 @@ where $\bar{\alpha}_ t = \prod_{i=1}^t \alpha_i $. Usually, $\alpha_i$ will decr
 
 
 ## DDPM Reverse Process (Decoding)
-To generate a new sample or reverse from $\x_T\sim\N(0,\I)$, we need to know $q(\x_{t-1} \mid \x_t)$ which is unavailable in practice. However, we know it is also Gaussian according to the Bayes' theorem. To make it tractable, we use $q(\x_{t-1} \mid \x_t, \x_0)$ which is conditioned on $\x_0$, which can be written as
+To generate a new sample or reverse from $\x_T\sim\N(0,\I)$, we need to know $q(\x_{t-1} \mid \x_t)$ which is unavailable in practice for decoding. However, we know it is also Gaussian according to the Bayes' theorem. To make it tractable, we use $q(\x_{t-1} \mid \x_t, \x_0)$ which is conditioned on $\x_0$, which can be written as
 
 $$
 q(\x_{t-1} \vert \x_t, \x_0) = q(\x_t\mid\x_{t-1},\x_0)\frac{q(\x_{t-1}\mid\x_0)}{q(\x_t\mid\x_0)} = \mathcal{N}(\x_{t-1}; \color{blue}{\tilde{\bm{\mu}}}(\x_t, \x_0), \color{red}{\tilde{\beta}_t} \mathbf{I}),
@@ -202,7 +202,7 @@ $L_T$ is considered a constant and ignored in the training (if $\beta_t$ is fixe
 </div>
 
 # Connection with DDIM 
-DDIM is proposed to accelerate the inference of DDPM. The formulation is slightly different but the training is proved to be the same. The difference is the inference which is more efficient compared to DDPM. 
+DDIM is proposed to accelerate the inference of DDPM. The formulation is slightly different but the training is proved to be the same.  
 
 The forward process is non-Markovian. Consider a family $Q$, indexed by a real vector $\sigma\in\R^T$, the joint is now conditioned on $\x_0$: $q_\sigma(\x_{1:T}\mid\x_0) = q_\sigma(\x_T\mid\x_0)\prod_{i=2}^Tq_\sigma(\x_{t-1}\mid\x_{t},\x_0)$ where 
 
@@ -214,27 +214,27 @@ $$
 
 The Eq. (4) is selected to satisfy the joint and $q_\sigma(\x_t\mid\x_0) = \N\nbr{\sqrt{\bar{\alpha}_t}, (1-\bar{\alpha}_t)\bm{I}}$.
 
-The forward process is obtained by $q_\sigma(\x_t\mid\x_{t-1},\x_0) = \frac{q_\sigma(\x_{t-1}\mid\x_{t},\x_0)q_\sigma(\x_t\mid\x_0)}{q_\sigma(\x_{t-1}\mid\x_0)}$. It is also Gaussian and the magnitude controls the randomness in the forward process. We don't need to know the form of this because it is not used. 
+The forward process is obtained by $q_\sigma(\x_t\mid\x_{t-1},\x_0) = \frac{q_\sigma(\x_{t-1}\mid\x_{t},\x_0)q_\sigma(\x_t\mid\x_0)}{q_\sigma(\x_{t-1}\mid\x_0)}$. It is also Gaussian and the magnitude controls the randomness in the forward process. If we set $\sigma_t = 0$, the forward process becomes deterministic. 
 
-The reverse process is similar to the DDPM. The generative process $p_\theta(\x_{0:T})$ is used to approximate the reverse process $q_\sigma(\x_{t-1}\mid\x_{t},\x_0)$ by minimization of KL-divergence and the training is the same as DDPM. We can let the model (U-net) predict either $\x_0$ directly or the noise $\bm{\epsilon}_t$. For example, 
+The reverse process is similar to the DDPM. The joint $p_\theta(\x_{0:T})$ is used to approximate the  $q_\sigma(\x_{t-1}\mid\x_{t},\x_0)$ by minimization of KL-divergence and the training objective is the same as $L_{\text{simple}}$ of DDPM ([Theorem 1 in DDIM paper](https://arxiv.org/abs/2010.02502)). We can let the model (U-net) predict either $\x_0$ directly or the noise $\bm{\epsilon}_t$. For example (noise prediction), 
 
 $$
-f_\theta(\x_t) = \frac{\x_t-\sqrt{1-\bar{\alpha}_t}\bm{\epsilon}^{t}_{\theta}(\x_t)}{\sqrt{\bar{\alpha}_t}} = \tilde{\x}_0
+f_\theta(\x_t) = \frac{\x_t-\sqrt{1-\bar{\alpha}_t}\bm{\epsilon}_{\theta}(\x_t,t)}{\sqrt{\bar{\alpha}_t}} = \tilde{\x}_0
 $$
 
- According to Eq. (6),
+ According to Eq. (5),
 
 $$
 \begin{align}
 \x_{t-1} &= \sqrt{\bar{\alpha}_{t-1}}\tilde{\x}_0 + \sqrt{1-\bar{\alpha}_{t-1}-\sigma_t^2}\frac{\x_t-\sqrt{\bar{\alpha}_{t}}\tilde{\x}_0}{\sqrt{1-\bar{\alpha}_{t}}} + \sigma_t\bm{\epsilon}\\
-&= \sqrt{\bar{\alpha}_{t-1}}\nbr{\frac{\x_t-\sqrt{1-\bar{\alpha}_t}\bm{\epsilon}^t_\theta(\x_t)}{\sqrt{\bar{\alpha}_{t}}}} + \sqrt{1-\bar{\alpha}_{t}-\sigma_t^2}\bm{\epsilon}^t_\theta(\x_t) + \sigma_t\bm{\epsilon}
+&= \sqrt{\bar{\alpha}_{t-1}}\nbr{\frac{\x_t-\sqrt{1-\bar{\alpha}_t}\bm{\epsilon}_\theta(\x_t,t)}{\sqrt{\bar{\alpha}_{t}}}} + \sqrt{1-\bar{\alpha}_{t}-\sigma_t^2}\bm{\epsilon}_\theta(\x_t,t) + \sigma_t\bm{\epsilon}
 \end{align}
 $$
 
 $\sigma_t$ is set to $0$ in DDIM and the forward process becomes deterministic and the reverse process becomes implicit probabilistic model.
 
 ## Accelerated Inference
-The main idea is that even though we need to go through every forward steps, only a small number of steps are required to sample in reverse process. The forward process can be only depend on a subset $\{\x_{\tau_1},...,\x_{\tau_S}\}\subset\{\x_1,...,\x_T\}$ because we let $\sigma_t = 0$ and the forward process is deterministic.
+In DDPM, we need to go through every forward steps to sample in reverse process. DDIM proposes to use a subset of total time steps to sample in reverse process, i.e., $\{\x_{\tau_1},...,\x_{\tau_S}\}\subset\{\x_1,...,\x_T\}$. From another perspective, the interval between two time steps is increased in the reverse process, e.g., $\tau_{s+1}-\tau_s = \Delta\tau \geq 1$ where $\Delta\tau$ is a hyperparameter. Now, we are sampling from $q_\sigma(\x_{t-\Delta_\tau}\mid\x_{t},\x_0)$ iteratively. Hence, the reverse process is accelerated. The reason we can do this is that the loss function does depend on the "marginal" $q_\sigma(\x_t\mid\x_0)$ but not directly on the joint $q(\x_{1:T}\mid\x_0)$. Hence, we can consider a subset of latent variables instead of all of them.
 
 
 # Connection with Score-based DM
