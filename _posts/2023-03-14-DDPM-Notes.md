@@ -1,17 +1,18 @@
 ---
 layout: post
-title: Notes of Denoising Diffusion Diffusion Model 
+title: Notes of Diffusion Model 
 date: 2023-03-05 20:00:00-0400
-description: learning progress of diffusion model
+description: some notes of diffusion model
 comments: true
 tags: Bayes Deep-Learning Diffusion-Model
 ---
 
-[last updated on 05/20/2023]: part of DDIM
+[last updated on 05/20/2023]: modify DDPM  
 
-- [General Overview of Denoising Diffusion Probabilistic Models (DDPM)](#general-overview-of-denoising-diffusion-probabilistic-models-ddpm)
-  - [Forward Diffusion](#forward-diffusion)
-  - [Reverse Process](#reverse-process)
+- [Revisit of Denoising Diffusion Probabilistic Models (DDPM)](#revisit-of-denoising-diffusion-probabilistic-models-ddpm)
+  - [DDPM Formulation](#ddpm-formulation)
+  - [DDPM Forward Process (Encoding)](#ddpm-forward-process-encoding)
+  - [DDPM Reverse Process (Decoding)](#ddpm-reverse-process-decoding)
   - [Training: ELBO](#training-elbo)
     - [Parameterization on $L\_t$](#parameterization-on-l_t)
     - [$L\_T$ and $L\_0$](#l_t-and-l_0)
@@ -27,26 +28,48 @@ tags: Bayes Deep-Learning Diffusion-Model
   - [Forward](#forward)
   - [Reverse](#reverse)
     - [Sampling](#sampling)
-  - [Reference](#reference)
 
-# General Overview of Denoising Diffusion Probabilistic Models (DDPM)
+# Revisit of Denoising Diffusion Probabilistic Models (DDPM)
 
 Some good reviews:
 1. [How diffusion models work: the math from scratch](https://theaisummer.com/diffusion-models/?fbclid=IwAR1BIeNHqa3NtC8SL0sKXHATHklJYphNH-8IGNoO3xZhSKM_GYcvrrQgB0o) 
 2. [What are Diffusion Models?](https://lilianweng.github.io/posts/2021-07-11-diffusion-models/) 
 3. [Generative Modeling by Estimating Gradients of the Data Distribution](https://yang-song.net/blog/2021/score/)
+4. [Understanding Diffusion Models: A Unified Perspective](https://ar5iv.labs.arxiv.org/html/2208.11970)
+## DDPM Formulation
+Given the data distribution $\x_0\sim q(\x_0)$ which is unknown, we want to learn an approximation $p_\theta (\x_0)$ that we can sample from. It is similar to variational autoencoder (VAE) or hierarchical VAE in the form, e.g., it also has encoding process (forward process) and decoding process (reverse process) and minimizes ELBO, but with multiple high dimensional latent variables.
 
-## Forward Diffusion
+Diffusion models are latent variable models with the formulation (Markov chain)
+
+$$
+p_\theta(\x_0) = \int p_\theta(\x_{0:T})d\x_{1:T} \space \text{where} \space p_\theta(\x_{0:T}) = p(\x_T)\prod_{t=1}^{T}p_\theta(\x_{t-1}\mid\x_t).
+$$
+
+The latent variables are $\{\x_1,...,\x_T\}$ with the same dimensionality as the data $\x_0$ and their joint $p_\theta(\x_{0:T})$ is called the reverse process (decoding) starting at $p(\x_T)=\N(0,\I)$. The approximate posterior $q(\x_{1:T}\mid\x_0)$, called the forward process, is fixed to another Markov chain
+
+$$
+q(\x_{1:T}\mid\x_0) = \prod_{t=1}^{T}q(\x_t\mid\x_{t-1}).
+$$
+
+Compared to other latent variable models, e.g., VAE, it has no learnable parameters in the approximate posterior $q$ (encoding). In this process, the data $\x_0$ is transformed to $\x_T$ by gradually adding Gaussian noise. To recover the data distribution, the ELBO is maximized as
+
+$$
+\begin{align*}
+\max_{\theta} \log p_\theta(\x_0) &= \log \int \frac{p_\theta(\x_{0:T})q(\x_{1:T}\mid\x_0)}{q(\x_{1:T}\mid\x_0)}d\x_{1:T}\\
+&= \log \mathbb{E}_{\x_{1:T}\sim q(\x_{1:T}\mid\x_0)}\sbr{\frac{p_\theta(\x_{0:T})}{q(\x_{1:T}\mid\x_0)}} \\
+&\geq \mathbb{E}_{\x_{1:T}\sim q(\x_{1:T}\mid\x_0)}\sbr{\log \frac{p_\theta(\x_{0:T})}{q(\x_{1:T}\mid\x_0)}}\\
+&= -KL\sbr{q(\x_{1:T}\mid\x_0)\mid p_\theta(\x_{0:T})}.
+\end{align*}
+$$
+
+## DDPM Forward Process (Encoding)
 The original data $\x_0\sim q(\x_0)$ and the Markov chain assumes we add noise to the data $\x_0$ in each time step $t\in[1,T]$ with transition kernel $q(\x_t\mid\x_{t-1})$ which is usually handcrafted as 
 
 $$
 q(\x_t\mid\x_{t-1}) = \N\nbr{\x_t;\sqrt{1-\beta_t}\x_{t-1},\beta_t\I}
 $$
 
-where $\beta_t\in (0,1)$ is a hyperparameter. 
-
-
-A closed form of dependence according to the reparameterization trick:
+where $\beta_t\in (0,1)$ is a hyperparameter. A closed form of dependence according to the reparameterization trick:
 
 $$
 \begin{align*}
@@ -66,56 +89,42 @@ $$
 \end{align}\\ 
 $$
 
-where $\bar{\alpha}_ t = \prod_{i=1}^t \alpha_i $. Usually, $\alpha_i$ will decrease along with $t$, and therefore $\bar{\alpha}_t \rightarrow 0$ when $t \rightarrow \infty$. For the joint, 
+where $\bar{\alpha}_ t = \prod_{i=1}^t \alpha_i $. Usually, $\alpha_i$ will decrease along with $t$, and therefore $\bar{\alpha}_t \rightarrow 0$ when $t \rightarrow \infty$.
+
+
+## DDPM Reverse Process (Decoding)
+To generate a new sample or reverse from $\x_T\sim\N(0,\I)$, we need to know $q(\x_{t-1} \mid \x_t)$ which is unavailable in practice. However, we know it is also Gaussian according to the Bayes' theorem. To make it tractable, we use $q(\x_{t-1} \mid \x_t, \x_0)$ which is conditioned on $\x_0$, which can be written as
 
 $$
-q(\x_{1:T}\mid\x_0) = \prod_{i=1}^T q(\x_t\mid\x_{t-1})
-$$
-
-
-
-## Reverse Process
-To generate a new sample, we need to know $q(\x_{t-1} \mid \x_t)$ which is unavailable in practice. **It is also Gaussian if $\beta_t$ is small enough** [3]. A model $p_\theta$ with parameters $\theta$ is involved to approximate $q(\x_{t-1} \mid \x_t)$
-
-$$
-p_\theta(\x_{t-1} \mid \x_{t}) = \N\nbr{\x_{t-1}\mid \bm{\mu}_\theta(\x_t, t), \bm{\Sigma}_\theta(\x_t, t)}
-$$
-
-$$
-p_\theta(\x_{0:T}) = p_\theta(\x_T)\prod_{i=1}^Tp_\theta(\x_{t-1}\mid \x_t)
-$$
-
-The reverse process conditioned on $\x_0$ is tractable:
-
-$$
-q(\mathbf{x}_{t-1} \vert \mathbf{x}_t, \mathbf{x}_0) = q(\x_t\mid\x_{t-1},\x_0)\frac{q(\x_{t-1}\mid\x_0)}{q(\x_t\mid\x_0)} = \mathcal{N}(\mathbf{x}_{t-1}; \color{blue}{\tilde{\boldsymbol{\mu}}}(\mathbf{x}_t, \mathbf{x}_0), \color{red}{\tilde{\beta}_t} \mathbf{I})
+q(\x_{t-1} \vert \x_t, \x_0) = q(\x_t\mid\x_{t-1},\x_0)\frac{q(\x_{t-1}\mid\x_0)}{q(\x_t\mid\x_0)} = \mathcal{N}(\x_{t-1}; \color{blue}{\tilde{\boldsymbol{\mu}}}(\x_t, \x_0), \color{red}{\tilde{\beta}_t} \mathbf{I}),
 $$ 
 
-The further derivations can be found [here](https://lilianweng.github.io/posts/2021-07-11-diffusion-models/) (complete the square) [1].
+where
 
 $$
 \begin{align}
 \tilde{\beta}_t 
 &= \frac{1 - \bar{\alpha}_{t-1}}{1 - \bar{\alpha}_t} \cdot \beta_t \nonumber\\
-\tilde{\boldsymbol{\mu}}_t (\mathbf{x}_t, \mathbf{x}_0)
-&= \frac{\sqrt{\alpha_t}(1 - \bar{\alpha}_{t-1})}{1 - \bar{\alpha}_t} \mathbf{x}_t + \frac{\sqrt{\bar{\alpha}_{t-1}}\beta_t}{1 - \bar{\alpha}_t} \mathbf{x}_0 \nonumber\\
-&= \frac{1}{\sqrt{\alpha_t}} \Big( \mathbf{x}_t - \frac{1 - \alpha_t}{\sqrt{1 - \bar{\alpha}_t}} \boldsymbol{\epsilon}_t \Big)
+\tilde{\boldsymbol{\mu}}_t (\x_t, \x_0)
+&= \frac{\sqrt{\alpha_t}(1 - \bar{\alpha}_{t-1})}{1 - \bar{\alpha}_t} \x_t + \frac{\sqrt{\bar{\alpha}_{t-1}}\beta_t}{1 - \bar{\alpha}_t} \x_0 \nonumber\\
+&= \frac{1}{\sqrt{\alpha_t}} \Big( \x_t - \frac{1 - \alpha_t}{\sqrt{1 - \bar{\alpha}_t}} \boldsymbol{\epsilon}_t \Big)
 = \tilde{\boldsymbol{\mu}}_t
 \end{align}
 $$
-with $\x_0 = \frac{1}{\sqrt{\bar{\alpha}_t}}(\x_t - \sqrt{1 - \bar{\alpha}_t}\bm{\epsilon}_t)$ (derived from Eq. (1))
+with $\x_0 = \frac{1}{\sqrt{\bar{\alpha}_t}}(\x_t - \sqrt{1 - \bar{\alpha}_t}\bm{\epsilon}_t)$ (derived from Eq. (1)). The details of derivations can be found [here](https://lilianweng.github.io/posts/2021-07-11-diffusion-models/) (complete the square). 
+
+Note that $q(\x_{t-1} \mid \x_t, \x_0) = q(\x_{t-1} \mid \x_t)$ due to Markovian property. The decoder $p_\theta$ with parameters $\theta$ is used to approximate $q(\x_{t-1} \mid \x_t, \x_0)$ with the same form as $q(\x_{t-1} \mid \x_t, \x_0)$ (Gaussian), i.e.,
+
+$$
+p_\theta(\x_{t-1} \mid \x_{t}) = \N\nbr{\x_{t-1}\mid \bm{\mu}_\theta(\x_t, t), \bm{\Sigma}_\theta(\x_t, t)}.
+$$
+
+
+
+
 ## Training: ELBO
 
-$$
-\begin{align*}
-KL\sbr{q(\x_{1:T}\mid\x_0)\mid p_\theta(\x_{1:T}\mid\x_0)} &= \mathbb{E}_{\x_{1:T}\sim q(\x_{1:T}\mid\x_0)}\sbr{\log \frac{q(\x_{1:T}\mid\x_0) p_\theta(\x_0)}{p_\theta(\x_{0:T})}}\\
-&= \log p_\theta(\x_0) + \mathbb{E}_{\x_{1:T}\sim q(\x_{1:T}\mid\x_0)}\sbr{\log \frac{q(\x_{1:T}\mid\x_0)}{p_\theta(\x_{0:T})}}\\
-\mathbb{E}_{\x_{1:T}\sim q(\x_{1:T}\mid\x_0)}\sbr{\log \frac{q(\x_{1:T}\mid\x_0)}{p_\theta(\x_{0:T})}} &
-\geq \mathbb{E}_{\x_{1:T}\sim q(\x_{1:T}\mid\x_0)}\sbr{-\log p_\theta(\x_0)}
-\end{align*}
-$$
-
-We let 
+Our objective is to maximize the ELBO $-KL\sbr{q(\x_{1:T}\mid\x_0)\mid p_\theta(\x_{0:T})}$ which is equivalent to minimize the negative ELBO 
 
 $$
 \begin{align*}
@@ -124,14 +133,14 @@ L &= \mathbb{E}_{\x_{1:T}\sim q(\x_{1:T}\mid\x_0)}\sbr{\log \frac{q(\x_{1:T}\mid
   &= \mathbb{E}_{\x_{1:T}\sim q(\x_{1:T}\mid\x_0)}\sbr{-\log p_\theta(\x_T) + \sum_{t=2}^T\log \frac{q(\x_t\mid\x_{t-1})}{p_\theta(\x_{t-1}\mid\x_t)} + \log\frac{q(\x_1\mid\x_0)}{p_\theta(\x_0\mid\x_1)}}\\
   &= \mathbb{E}_{\x_{1:T}\sim q(\x_{1:T}\mid\x_0)}\sbr{-\log p_\theta(\x_T) + \sum_{t=2}^T\log \nbr{\frac{q(\x_{t-1}\mid\x_{t},\x_0)}{p_\theta(\x_{t-1}\mid\x_t)}\frac{q(\x_t\mid\x_0)}{q(\x_{t-1}\mid\x_0)}} + \log\frac{q(\x_1\mid\x_0)}{p_\theta(\x_0\mid\x_1)}}\\
   &= \mathbb{E}_{\x_{1:T}\sim q(\x_{1:T}\mid\x_0)}\sbr{-\log p_\theta(\x_T) + \sum_{t=2}^T\log \frac{q(\x_{t-1}\mid\x_{t},\x_0)}{p_\theta(\x_{t-1}\mid\x_t)} + \log \frac{q(\x_T\mid\x_0)}{q(\x_{1}\mid\x_0)} + \log\frac{q(\x_1\mid\x_0)}{p_\theta(\x_0\mid\x_1)}}\\
-  &= \mathbb{E}_{\x_{1:T}\sim q(\x_{1:T}\mid\x_0)}\sbr{\log \frac{q(\x_T\mid\x_0)}{p_\theta(\x_T)} + \sum_{t=2}^T\log \frac{q(\x_{t-1}\mid\x_{t},\x_0)}{p_\theta(\x_{t-1}\mid\x_t)}  - \log p_\theta(\x_0\mid\x_1)}\\
-  &= \underbrace{KL\sbr{q(\x_T\mid\x_0)\mid p_\theta(\x_T)}}_{L_T} + \sum_{t=2}^T \underbrace{\mathbb{E}_{\x_t\sim q(\x_t\mid\x_0)}\sbr{KL\sbr{q(\x_{t-1}\mid\x_{t},\x_0)\mid p_\theta(\x_{t-1}\mid\x_t)}}}_{L_{t}} - \underbrace{\mathbb{E}_{\x_{1}\sim q(\x_{1}\mid\x_0)}\sbr{\log p_\theta(\x_0\mid\x_1)}}_{L_0}
+  &= \mathbb{E}_{\x_{1:T}\sim q(\x_{1:T}\mid\x_0)}\sbr{\log \frac{q(\x_T\mid\x_0)}{p(\x_T)} + \sum_{t=2}^T\log \frac{q(\x_{t-1}\mid\x_{t},\x_0)}{p_\theta(\x_{t-1}\mid\x_t)}  - \log p_\theta(\x_0\mid\x_1)}\\
+  &= \underbrace{KL\sbr{q(\x_T\mid\x_0)\mid p(\x_T)}}_{L_T} + \sum_{t=2}^T \underbrace{\mathbb{E}_{\x_t\sim q(\x_t\mid\x_0)}\sbr{KL\sbr{q(\x_{t-1}\mid\x_{t},\x_0)\mid p_\theta(\x_{t-1}\mid\x_t)}}}_{L_{t}} - \underbrace{\mathbb{E}_{\x_{1}\sim q(\x_{1}\mid\x_0)}\sbr{\log p_\theta(\x_0\mid\x_1)}}_{L_0}
 \end{align*}
 $$
 
 ### Parameterization on $L_t$
 
-For $L_t$, we use the model $p_\theta$ to approximate $q(\x_{t-1}\mid\x_t, \x_0)$ (see Eq. (2)). Hence,
+For $L_t$, we assume the decoder $p_\theta$ has the same form as $q(\x_{t-1}\mid\x_t, \x_0)$ (see Eq. (2)), and the mean $\bm{\mu}_\theta$ is parameterized as
 
 $$
 \bm{\mu}_\theta = \frac{1}{\sqrt{\alpha_t}} \nbr{\x_t - \frac{1 - \alpha_t}{\sqrt{1 - \bar{\alpha}_t}} \bm{\epsilon}_\theta(\x_t, t)}
@@ -141,35 +150,39 @@ $$
 p_\theta(\x_{t-1}\mid\x_t) = \N\nbr{\x_{t-1}; \frac{1}{\sqrt{\alpha_t}} \Big( \x_t - \frac{1 - \alpha_t}{\sqrt{1 - \bar{\alpha}_t}} \bm{\epsilon}_\theta(\x_t, t) \Big), \bm{\Sigma}_\theta(\x_t, t)}
 $$
 
+In the above case, the $\bm{\epsilon}_\theta(\x_t, t)$ is the output of the backbone model (usually U-net) which is used to approximate the added noise $\bm{\epsilon}_t$ in the forward process. 
+
 The KL divergence between two Gaussian: 
 
 $$
-_{KL}(p||q) = \frac{1}{2}\left[\log\frac{|\Sigma_q|}{|\Sigma_p|} - k + (\boldsymbol{\mu_p}-\boldsymbol{\mu_q})^T\Sigma_q^{-1}(\boldsymbol{\mu_p}-\boldsymbol{\mu_q}) + tr\left\{\Sigma_q^{-1}\Sigma_p\right\}\right]
+_{KL}(p||q) = \frac{1}{2}\left[\log\frac{|\Sigma_q|}{|\Sigma_p|} - d + (\boldsymbol{\mu_p}-\boldsymbol{\mu_q})^T\Sigma_q^{-1}(\boldsymbol{\mu_p}-\boldsymbol{\mu_q}) + tr\left\{\Sigma_q^{-1}\Sigma_p\right\}\right]
 $$
 
 We set $\bm{\Sigma}_\theta(\x_t, t) = \sigma_t^2\bm{I}$ where $\sigma_t^2 = \tilde{\beta}_t$ or $\sigma_t^2 = \beta_t$
 $$
 \begin{align}
-L_t &= \mathbb{E}_{\x_0, \bm{\epsilon}} \sbr{\frac{1}{2\sigma_t^2} \| \tilde{\boldsymbol{\mu}}_t(\mathbf{x}_t, \mathbf{x}_0) - \bm{\mu}_\theta(\mathbf{x}_t, t) \|^2 } \nonumber\\
+L_t &= \mathbb{E}_{\x_0, \bm{\epsilon}} \sbr{\frac{1}{2\sigma_t^2} \| \tilde{\boldsymbol{\mu}}_t(\x_t, \x_0) - \bm{\mu}_\theta(\x_t, t) \|^2 } \nonumber\\
 &= \mathbb{E}_{\x_0, \bm{\epsilon}} \sbr{\frac{ (1 - \alpha_t)^2 }{2 \alpha_t (1 - \bar{\alpha}_t) \sigma_t^2} \|\boldsymbol{\epsilon}_t - \bm{\epsilon}_\theta(\x_t, t)\|^2} \nonumber\\
 &= \mathbb{E}_{\x_0, \bm{\epsilon}} \sbr{\frac{ (1 - \alpha_t)^2 }{2 \alpha_t (1 - \bar{\alpha}_t) \sigma_t^2} \|\boldsymbol{\epsilon}_t - \bm{\epsilon}_\theta(\sqrt{\bar{\alpha}_t}\x_{0} + \sqrt{1-\bar{\alpha}_{t}} \bm{\epsilon}_t, t)\|^2} \\
 \end{align}
 $$
 
-Eq. (3) is further reduced to Eq. (4) where the weight term is removed for better sample quality [4].
+Eq. (3) is further reduced to 
 
 $$
-L_{\text{simple}}(\theta) := \mathbb{E}_{\x_0, \bm{\epsilon}} \sbr{\|\bm{\epsilon}_t - \bm{\epsilon}_\theta(\sqrt{\bar{\alpha}_t}\x_{0} + \sqrt{1-\bar{\alpha}_{t}} \bm{\epsilon}_t, t)\|^2}
+\begin{equation}
+L_{\text{simple}}(\theta) := \mathbb{E}_{\x_0, \bm{\epsilon}} \sbr{\|\bm{\epsilon}_t - \bm{\epsilon}_\theta(\sqrt{\bar{\alpha}_t}\x_{0} + \sqrt{1-\bar{\alpha}_{t}} \bm{\epsilon}_t, t)\|^2},
+\end{equation}
 $$
+where the weight term is removed for better sample quality.
 
-Note that the model (U net) is used to approximate the noise $\bm{\epsilon}_t$ and it can be also used to predict $\x_0$ directly.
+From another perspective, $\bm{\mu}_\theta$ can be parameterized as $\bm{\mu}_\theta = \frac{\sqrt{\alpha_t}(1 - \bar{\alpha}_{t-1})}{1 - \bar{\alpha}_t} \x_t + \frac{\sqrt{\bar{\alpha}_{t-1}}\beta_t}{1 - \bar{\alpha}_t} \tilde{\x}_\theta(\x_y,t)$  where $\tilde{\x}_\theta(\x_y,t)$ is the output of the backbone model (U-net) which is used to predict the data $\x_0$ directly.
+
 ### $L_T$ and $L_0$ 
 
-$L_T$ is considered a constant and ignored in the training ($\beta_t$ is fixed). $L_0$ can be regraded as reconstruction error (VAE settings). 
-<!-- ### Parameterization on $L_0$ -->
+$L_T$ is considered a constant and ignored in the training (if $\beta_t$ is fixed). $L_0$ can be regraded as reconstruction error (VAE settings), i.e., $t=1$ in Eq. (4). More details can be found in the [DDPM paper Sec. 3.3](https://arxiv.org/abs/2006.11239).
+
 ## Implementation
-<!-- ![train_sample](../assets/post_img/DDPM-algo.png)
-<p style="text-align: center;">Traning and sampling process (Image Source [4])</p> -->
 
 <div class="row mt-3">
     <div class="col-sm mt-3 mt-md-0">
@@ -177,7 +190,7 @@ $L_T$ is considered a constant and ignored in the training ($\beta_t$ is fixed).
     </div>
 </div>
 <div class="caption">
-      Traning and sampling process (Image Source [4])
+      Traning and sampling process (Source: DDPM paper)
 </div>
 
 # Connection with DDIM 
@@ -280,11 +293,3 @@ $$
 - Predictor-corrector Sampler
 - ODE Solver
 
-## Reference
-[1] L. Weng, “What are diffusion models?,” lilianweng.github.io, Jul. 2021, [Online]. Available: https://lilianweng.github.io/posts/2021-07-11-diffusion-models/
-
-[2] Karagiannakos, “Diffusion models: toward state-of-the-art image generation,” https://theaisummer.com/, 2022, [Online]. Available: https://theaisummer.com/diffusion-models/
-
-[3] Jascha Sohl-Dickstein et al. “Deep Unsupervised Learning using Nonequilibrium Thermodynamics.” ICML 2015.
-
-[4] Jonathan Ho et al. “Denoising diffusion probabilistic models.” arxiv Preprint arxiv:2006.11239 (2020).
