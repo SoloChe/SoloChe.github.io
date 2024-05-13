@@ -23,6 +23,7 @@ tags: Bayes Deep-Learning Diffusion-Model
   - [Accelerated Inference](#accelerated-inference)
 - [Connection with Score-based DM](#connection-with-score-based-dm)
   - [What is Score and Score Matching?](#what-is-score-and-score-matching)
+  - [From DDPM to Score Matching (Tweedie's Formula)](#from-ddpm-to-score-matching-tweedies-formula)
   - [Noise Conditional Score Networks (NCSN)](#noise-conditional-score-networks-ncsn)
   - [Langevin Dynamics for Sampling](#langevin-dynamics-for-sampling)
     - [Langevin Dynamics](#langevin-dynamics)
@@ -242,30 +243,64 @@ In DDPM, we need to go through every forward steps to sample in reverse process.
 
 ## What is Score and Score Matching?
 
-Score of a probability density function $p_{\bm{\theta}}(\x)$ is defined as $\nabla_{\x}\log p_{\bm{\theta}}$. The PDF is usually with the form $p_{\bm{\theta}} = \frac{\exp \nbr{-E_{\bm{\theta}}\nbr{\x}}}{Z_\theta}$ where $E_{\bm{\theta}}$ is a nonlinear regression function with parameter $\bm{\theta}$, which is called the energy. For example, if $p_{\bm{\theta}}$ is Gaussian distributed, $E_{\bm{\theta}} = -\frac{1}{2\sigma^2}\nbr{\x-\bm{\mu}}^2$ and $\nabla_{\x}\log p_{\bm{\theta}} = -\frac{\x-\bm{\mu}}{\sigma^2} = -\frac{\bm{\epsilon}}{\sigma}$ (standardization).
-
-We want to learn an model $p_{\bm{\theta}}$ to capture the data distribution $p_{data}(\x)$, If $\nabla_{\x}\log p_{\bm{\theta}} = \nabla_{\x}\log p_{data}(\x)$, then $p_{\bm{\theta}} \equiv p_{data}(\x)$. For score matching, we minimize the Fisher Divergence
+Score of a probability density function $p(\x)$ is defined as $\nabla_{\x}\log p$. For example, if $p_{\bm{\theta}}$ is Gaussian distributed, $\nabla_{\x}\log p = -\frac{\x-\bm{\mu}}{\sigma^2} = -\frac{\bm{\epsilon}}{\sigma}$ (standardization). We want to learn a score model $\bm{s}\_\theta(\x)=\nabla_{\x}\log p_\theta$ to approximate $\nabla_{\x}\log p$ because we can draw samples from the approximated score function. To train $\bm{s}_\theta$, we minimize the Fisher Divergence, which is also called score matching,
 
 $$
-D_F\sbr{p_{data}\mid p_{\bm{\theta}}} = \mathbb{E}_{p_{data}}\sbr{\frac{1}{2}\lVert\nabla_{\x}\log p_{data}(\x) - \nabla_{\x}\log p_{\bm{\theta}}(\x)\rVert^2}.
+D_F\sbr{p_{data}\mid p_{\bm{\theta}}} = \mathbb{E}_{p_{data}}\sbr{\frac{1}{2}\lVert\nabla_{\x}\log p_{data}(\x) - \bm{s}_{\bm{\theta}}(\x)\rVert^2}.
 $$
 
-However, $p_{data}$ is unknown. It can be further written as 
-
-$$D_F\sbr{p_{data}\mid p_{\bm{\theta}}} = \mathbb{E}_{p_{data}}\sbr{Tr(\nabla_{\x}^2\log p_{\bm{\theta}}(\x)) + \frac{1}{2}\lVert\nabla_{\x}\log p_{\bm{\theta}}(\x)\rVert^2}+ Constant$$ 
-
-to get rid of the unknown $p_{data}$. It raises another problem that the computation of the second derivative is inefficient (quadratic in the dimensionality), which cannot be scaled to high dimensionality.
-
-To circumvent the computation of $Tr(\nabla_{\x}^2\log p_{\bm{\theta}}(\x))$, we can user either **Denoising Score Matching** or **Sliced score matching**. Here, we focus on the former which is used in **Noise Conditional Score Networks**. The idea is that we purturb the data $\x$ with a pre-specified noise distribution $q_{\sigma}(\tilde{\x}\mid\x)$ and minimize
+However, $p_{data}$ is unknown. It can be replaced by the derivative of $\bm{s}\_\theta(\x)$ to eliminate the unknown $p_{data}$, 
 
 $$
-D_F\sbr{q_{\sigma}\mid p_{\bm{\theta}}} = \mathbb{E}_{q_{\sigma}}\mathbb{E}_{p_{data}}\sbr{\frac{1}{2}\lVert\nabla_{\x}\log p_{\bm{\theta}}(\x) - \nabla_{\x} q_{\sigma}(\tilde{\x}\mid\x)\rVert^2}.
+D_F\sbr{p_{data}\mid p_{\bm{\theta}}} = \mathbb{E}_{p_{data}}\sbr{Tr(\nabla_{\x} \bm{s}_{\bm{\theta}}(\x)) + \frac{1}{2}\lVert \bm{s}_{\bm{\theta}}(\x)\rVert^2} + \text{Constant}.
 $$
 
-Note that $\nabla_{\x}\log p_{\bm{\theta}}(\x) = \nabla_{\x} q_{\sigma}(\tilde{\x}\mid\x) \approx \nabla_{\x}\log p_{data}(\x)$ is true only when the noise level $\sigma$ is small enough, which leads to $p_{\bm{\theta}}(\x) \approx p_{data}(\x)$. There are also two problems:
+Note that we use $\bm{s}\_\theta(\x)$ to approximate the $\nabla_{\x}\log p_{data}(\x)$. Hence, $Tr(\nabla_{\x} \bm{s}_{\bm{\theta}}(\x))$ is actually the second derivative.  It raises another problem that the computation of the trace, which cannot be scaled to high dimensionality.
+
+To circumvent the computation of $Tr(\nabla_{\x}^2\log p_{\bm{\theta}}(\x))$, we can use either **Denoising Score Matching** or **Sliced score matching**. Here, we focus on the former which is used in [Noise Conditional Score Networks](https://arxiv.org/abs/1907.05600). The idea is that we purturb the data $\x$ with a pre-specified noise distribution $q_{\sigma}(\tilde{\x}\mid\x)$ and minimize
+
+$$
+ \mathbb{E}_{q_{\sigma}}\mathbb{E}_{p_{data}}\sbr{\frac{1}{2}\lVert\bm{s_\theta}(\tilde{\x}) - \nabla_{\tilde{\x}} q_{\sigma}(\tilde{\x}\mid\x)\rVert^2}.
+$$
+
+Note that $\bm{s_\theta}(\tilde{\x}) = \nabla_{\tilde{\x}} q_{\sigma}(\tilde{\x}\mid\x) \approx \nabla_{\x}\log p_{data}(\x)$ is true only when the noise level $\sigma$ is small enough, which leads to $\bm{s_\theta}(\tilde{\x}) \approx p_{data}(\x)$. There are also two problems:
 
 - Inaccurate score estimation in low data density
 - Slow mixing of Langevin dynamics
+
+## From DDPM to Score Matching (Tweedie's Formula)
+
+From Eq. (1), we have the forward process $\x_t\sim\N(\x_t \mid \sqrt{\bar{\alpha}_t}\x_0, (1-\bar{\alpha}_t)\I)$. By Tweedie's formula, the mean can be approximated as
+
+$$
+\begin{align*}
+\sqrt{\bar{\alpha}_t}\x_0 &= \x_t + (1-\bar{\alpha}_t)\nabla_{\x_t}\log p(\x_t)\\
+\x_0 &= \frac{\x_t}{\sqrt{\bar{\alpha}_t}} + \frac{1-\bar{\alpha}_t}{\sqrt{\bar{\alpha}_t}}\nabla_{\x_t}\log p(\x_t).\\
+\end{align*}
+$$
+
+In this case, the $\tilde{\bm{\mu}}_t (\x_t, \x_0)$ can be parameterized as
+
+$$
+\bm{\mu}_t(\x_t,\x_0) = \frac{1}{\sqrt{\alpha}_t} \x_t + \frac{1-\alpha_t}{\sqrt{\alpha}_t}\nabla_{\x_t}\log p(\x_t).
+$$
+
+Then, the backbone model is used to predict the score at time step $t$. The approximation becomes
+
+$$
+\bm{\mu}_\theta = \frac{\x_t}{\sqrt{\bar{\alpha}_t}} + \frac{1-\bar{\alpha}_t}{\sqrt{\bar{\alpha}_t}}\bm{s}_\theta(\x_t, t).
+$$
+
+Finally, the objective becomes
+
+$$
+\begin{align*}
+L_t &= \mathbb{E}_{\x_0, \bm{\epsilon}} \sbr{\frac{1}{2\sigma_t^2} \| \tilde{\bm{\mu}}_t(\x_t, \x_0) - \bm{\mu}_\theta(\x_t, t) \|^2 }\\
+&= \mathbb{E}_{\x_0, \bm{\epsilon}} \sbr{\frac{1}{2\sigma_t^2}\frac{ (1 - \alpha_t)^2 }{\alpha_t} \|\bm{s}_\theta(\x_t, t) - \nabla_{\x_t}\log p(\x_t)\|^2}.
+\end{align*}
+$$
+
+Note that the true noise and the score looks very similar in the above equation. If we compare two type of $\x_0$ from score and noise, we have $\nabla_{\x_t}\log p(\x_t)=-\frac{1}{\sqrt{1-\bar{\alpha}}}\bm{\epsilon}$.
 
 ## Noise Conditional Score Networks (NCSN)
 
