@@ -7,7 +7,7 @@ comments: true
 tags: Bayes Deep-Learning Diffusion-Model
 ---
 
-**Last update on 05/12/2024:** Updated DDIM and the next update would be the connection with score-based DM and neural ODEs.
+**Last update on 05/18/2024:** Updated Guidance and the next update would be the connection with score-based DM and neural ODEs.
 
 
 **Table of Contents**
@@ -22,8 +22,11 @@ tags: Bayes Deep-Learning Diffusion-Model
 - [Connection with DDIM](#connection-with-ddim)
   - [Accelerated Inference](#accelerated-inference)
 - [Connection with Score-based DM](#connection-with-score-based-dm)
-  - [What is Score and Score Matching?](#what-is-score-and-score-matching)
-  - [From DDPM to Score Matching (Tweedie's Formula)](#from-ddpm-to-score-matching-tweedies-formula)
+  - [Score Matching](#score-matching)
+  - [DDPM to Score Matching (Tweedie's Formula)](#ddpm-to-score-matching-tweedies-formula)
+- [Connection with Guidance](#connection-with-guidance)
+  - [Classifier Guidance](#classifier-guidance)
+  - [Classifier-free Guidance](#classifier-free-guidance)
   - [Noise Conditional Score Networks (NCSN)](#noise-conditional-score-networks-ncsn)
   - [Langevin Dynamics for Sampling](#langevin-dynamics-for-sampling)
     - [Langevin Dynamics](#langevin-dynamics)
@@ -241,34 +244,34 @@ In DDPM, we need to go through every forward steps to sample in reverse process.
 
 # Connection with Score-based DM
 
-## What is Score and Score Matching?
+## Score Matching
 
 Score of a probability density function $p(\x)$ is defined as $\nabla_{\x}\log p$. For example, if $p_{\bm{\theta}}$ is Gaussian distributed, $\nabla_{\x}\log p = -\frac{\x-\bm{\mu}}{\sigma^2} = -\frac{\bm{\epsilon}}{\sigma}$ (standardization). We want to learn a score model $\bm{s}\_\theta(\x)=\nabla_{\x}\log p_\theta$ to approximate $\nabla_{\x}\log p$ because we can draw samples from the approximated score function. To train $\bm{s}_\theta$, we minimize the Fisher Divergence, which is also called score matching,
 
 $$
-D_F\sbr{p_{data}\mid p_{\bm{\theta}}} = \mathbb{E}_{p_{data}}\sbr{\frac{1}{2}\lVert\nabla_{\x}\log p_{data}(\x) - \bm{s}_{\bm{\theta}}(\x)\rVert^2}.
+D_F\sbr{p_{data}\mid p_\theta} = \mathbb{E}_{p_{data}}\sbr{\frac{1}{2}\lVert\nabla_{\x}\log p_{data}(\x) - \bm{s}_\theta(\x)\rVert^2}.
 $$
 
 However, $p_{data}$ is unknown. It can be replaced by the derivative of $\bm{s}\_\theta(\x)$ to eliminate the unknown $p_{data}$, 
 
 $$
-D_F\sbr{p_{data}\mid p_{\bm{\theta}}} = \mathbb{E}_{p_{data}}\sbr{Tr(\nabla_{\x} \bm{s}_{\bm{\theta}}(\x)) + \frac{1}{2}\lVert \bm{s}_{\bm{\theta}}(\x)\rVert^2} + \text{Constant}.
+D_F\sbr{p_{data}\mid p_\theta} = \mathbb{E}_{p_{data}}\sbr{Tr(\nabla_{\x} \bm{s}_\theta(\x)) + \frac{1}{2}\lVert \bm{s}_\theta(\x)\rVert^2} + \text{Constant}.
 $$
 
-Note that we use $\bm{s}\_\theta(\x)$ to approximate the $\nabla_{\x}\log p_{data}(\x)$. Hence, $Tr(\nabla_{\x} \bm{s}_{\bm{\theta}}(\x))$ is actually the second derivative.  It raises another problem that the computation of the trace, which cannot be scaled to high dimensionality.
+Note that we use $\bm{s}\_\theta(\x)$ to approximate the $\nabla_{\x}\log p_{data}(\x)$. Hence, $Tr(\nabla_{\x} \bm{s}_\theta(\x))$ is actually the second derivative.  It raises another problem that the computation of the trace, which cannot be scaled to high dimensionality.
 
 To circumvent the computation of $Tr(\nabla_{\x}^2\log p_{\bm{\theta}}(\x))$, we can use either **Denoising Score Matching** or **Sliced score matching**. Here, we focus on the former which is used in [Noise Conditional Score Networks](https://arxiv.org/abs/1907.05600). The idea is that we purturb the data $\x$ with a pre-specified noise distribution $q_{\sigma}(\tilde{\x}\mid\x)$ and minimize
 
 $$
- \mathbb{E}_{q_{\sigma}}\mathbb{E}_{p_{data}}\sbr{\frac{1}{2}\lVert\bm{s_\theta}(\tilde{\x}) - \nabla_{\tilde{\x}} q_{\sigma}(\tilde{\x}\mid\x)\rVert^2}.
+ \mathbb{E}_{q_{\sigma}}\mathbb{E}_{p_{data}}\sbr{\frac{1}{2}\lVert\bm{s}_\theta(\tilde{\x}) - \nabla_{\tilde{\x}} q_{\sigma}(\tilde{\x}\mid\x)\rVert^2}.
 $$
 
-Note that $\bm{s_\theta}(\tilde{\x}) = \nabla_{\tilde{\x}} q_{\sigma}(\tilde{\x}\mid\x) \approx \nabla_{\x}\log p_{data}(\x)$ is true only when the noise level $\sigma$ is small enough, which leads to $\bm{s_\theta}(\tilde{\x}) \approx p_{data}(\x)$. There are also two problems:
+Note that $\bm{s}\_\theta(\tilde{\x}) = \nabla_{\tilde{\x}} q_{\sigma}(\tilde{\x}\mid\x) \approx \nabla_{\x}\log p_{data}(\x)$ is true only when the noise level $\sigma$ is small enough, which leads to $\bm{s}\_\theta(\tilde{\x}) \approx p_{data}(\x)$. There are also two problems:
 
 - Inaccurate score estimation in low data density
 - Slow mixing of Langevin dynamics
 
-## From DDPM to Score Matching (Tweedie's Formula)
+## DDPM to Score Matching (Tweedie's Formula)
 
 From Eq. (1), we have the forward process $\x_t\sim\N(\x_t \mid \sqrt{\bar{\alpha}_t}\x_0, (1-\bar{\alpha}_t)\I)$. By Tweedie's formula, the mean can be approximated as
 
@@ -282,7 +285,7 @@ $$
 In this case, the $\tilde{\bm{\mu}}_t (\x_t, \x_0)$ can be parameterized as
 
 $$
-\bm{\mu}_t(\x_t,\x_0) = \frac{1}{\sqrt{\alpha}_t} \x_t + \frac{1-\alpha_t}{\sqrt{\alpha}_t}\nabla_{\x_t}\log p(\x_t).
+\tilde{\bm{\mu}}_t (\x_t, \x_0) = \frac{1}{\sqrt{\alpha}_t} \x_t + \frac{1-\alpha_t}{\sqrt{\alpha}_t}\nabla_{\x_t}\log p(\x_t).
 $$
 
 Then, the backbone model is used to predict the score at time step $t$. The approximation becomes
@@ -301,6 +304,74 @@ L_t &= \mathbb{E}_{\x_0, \bm{\epsilon}} \sbr{\frac{1}{2\sigma_t^2} \| \tilde{\bm
 $$
 
 Note that the true noise and the score looks very similar in the above equation. If we compare two type of $\x_0$ from score and noise, we have $\nabla_{\x_t}\log p(\x_t)=-\frac{1}{\sqrt{1-\bar{\alpha}}}\bm{\epsilon}$.
+
+# Connection with Guidance
+
+In guided diffusion models, we approximate the conditional data distribution $p(\x\mid y)$ instead of $p(\x)$. Hence, our goal is to learn the gradient $\nabla_{\x_t}\log p(\x_t\mid y)$ which can be written as 
+
+$$
+\begin{equation}
+\nabla_{\x_t}\log p(\x_t\mid y) = \underbrace{\nabla_{\x_t}\log p(y\mid\x_t)}_{\text{adversarial gradient}} + \underbrace{\nabla_{\x_t}\log p(\x)}_{\text{uncond. gradient}}.
+\end{equation}
+$$
+
+## Classifier Guidance
+
+In the classifier guidance, we have a classifier $\bm{C}_\phi$ which is used to predict the label $y$ given noised data $\x_t$. The gradient of the classifier is used as guidance, i.e.,
+
+$$
+\begin{align*}
+\nabla_{\x_t}\log p(\x_t\mid y) &\approx \nabla_{\x_t}\log C_\phi(y\mid\x_t) + \bm{s}_\theta(\x_t, t)\\
+&= \nabla_{\x_t}\log C_\phi(y\mid\x_t)  - \frac{1}{\sqrt{1-\bar{\alpha}}}\bm{\epsilon}_\theta(\x_t, t)\\
+&= - \frac{1}{\sqrt{1-\bar{\alpha}}} \underbrace{\nbr{\bm{\epsilon}_\theta(\x_t, t) - \sqrt{1-\bar{\alpha}}\nabla_{\x_t}\log C_\phi(y\mid\x_t)}}_{\text{new predictor}}.
+\end{align*}
+$$
+
+Note that $\nabla_{\x_t}\log p(\x_t)=-\frac{1}{\sqrt{1-\bar{\alpha}}}\bm{\epsilon}$. Then, the new predictor can be combined with a parameter $w$ to control the guidance strength, i.e., 
+
+$$
+\begin{equation}
+\tilde{\bm{\epsilon}}(\x_t, t) = \bm{\epsilon}_\theta(\x_t, t) - w\sqrt{1-\bar{\alpha}}\nabla_{\x_t}\log C_\phi(y\mid\x_t),
+\end{equation}
+$$
+
+where we have the form
+
+$$
+\nabla_{\x_t}\log p(\x_t) + \gamma \nabla_{\x_t}\log p(y\mid\x_t).
+$$
+
+One of the drawbacks of the classifier guidance is that the classifier has to be trained separately. In most of work, $\bm{\epsilon}\_\theta(\x_t, t)$ is replaced by the conditioned version $\bm{\epsilon}\_\theta(\x_t, t, y)$ in Eq. (9).
+
+## Classifier-free Guidance
+
+To avoid the classifier, we need to reconsider the term $\nabla_{\x_t}\log p(y\mid\x_t)$. With Bayes' theorem, we have
+
+$$
+\begin{align*}
+\nabla_{\x_t}\log p(y\mid\x_t) &= \nabla_{\x_t}\log p(\x_t\mid y) - \nabla_{\x_t}\log p(\x_t)\\
+&\approx \bm{s}_\theta(\x_t, t, y) - \bm{s}_\theta(\x_t, t)\\
+&= -\frac{1}{\sqrt{1-\bar{\alpha}}}\nbr{\bm{\epsilon}_\theta(\x_t, t, y)-\bm{\epsilon}_\theta(\x_t, t)}
+\end{align*}
+$$
+
+The idea is that we use a new model $\bm{\epsilon}\_\theta(\x_t, t, y)$ to learn the conditioned score. To obtain the approximated $\nabla_{\x_t}\log p(\x_t\mid y)$, we just add the unconditioned score, i.e., 
+
+$$
+\begin{align*}
+\nabla_{\x_t}\log p(\x_t\mid y) &\approx \gamma\nabla_{\x_t}\log p(y\mid\x_t) + \nabla_{\x_t}\log p(\x_t)\\
+&\approx -\frac{\gamma}{\sqrt{1-\bar{\alpha}}}\nbr{\bm{\epsilon}_\theta(\x_t, t, y)-\bm{\epsilon}_\theta(\x_t, t)} - \frac{1}{\sqrt{1-\bar{\alpha}}}\bm{\epsilon}_\theta(\x_t, t)\\
+&=- \frac{1}{\sqrt{1-\bar{\alpha}}}\underbrace{\nbr{\gamma\bm{\epsilon}_\theta(\x_t, t, y) - (\gamma-1)\bm{\epsilon}_\theta(\x_t, t)}}_{\text{new predictor}}.
+\end{align*}
+$$
+
+If we set $\gamma=w+1$, we have the same form as the one in the classifier-free paper. Hence, the new predictor can be written as
+
+$$
+\begin{equation}
+\tilde{\bm{\epsilon}}(\x_t, t, y) = (w+1)\bm{\epsilon}_\theta(\x_t, t, y) - w\bm{\epsilon}_\theta(\x_t, t).
+\end{equation}
+$$
 
 ## Noise Conditional Score Networks (NCSN)
 
