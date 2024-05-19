@@ -373,6 +373,8 @@ $$
 \end{equation}
 $$
 
+The advantage of the classifier-free guidance is that we do not need to train the classifier separately. The conditioned model $\bm{\epsilon}\_\theta(\x_t, t, y)$ and unconditioned model $\bm{\epsilon}\_\theta(\x_t, t, \emptyset)$ are learned jointly by "turn off" a certain ratio of the labels (looks like dropout normalization). For example, if we set the ratio (threshold) to $p$, we generate a mask `mask = torch.rand(cemb.shape[0])<threshold` where `cemb` is a batch of label embeddings. Then, we "turn off" these labels, i.e., `cemb[np.where(mask)[0]] = 0`. Finally, we add time embeddings and label embeddings, i.e., `emb = cemb + temb` to as the input to the backbone model.
+
 ## Noise Conditional Score Networks (NCSN)
 
 To address these two issues, NCSN perturb the data in multiple steps.
