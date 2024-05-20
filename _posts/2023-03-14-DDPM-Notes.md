@@ -22,12 +22,12 @@ tags: Bayes Deep-Learning Diffusion-Model
 - [Connection with DDIM](#connection-with-ddim)
   - [Accelerated Inference](#accelerated-inference)
 - [Connection with Score-based DM](#connection-with-score-based-dm)
-  - [Score Matching](#score-matching)
+  - [Score and Score Matching](#score-and-score-matching)
   - [DDPM to Score Matching (Tweedie's Formula)](#ddpm-to-score-matching-tweedies-formula)
 - [Connection with Guidance](#connection-with-guidance)
   - [Classifier Guidance](#classifier-guidance)
   - [Classifier-free Guidance](#classifier-free-guidance)
-  - [Noise Conditional Score Networks (NCSN)](#noise-conditional-score-networks-ncsn)
+- [Noise Conditional Score Networks (NCSN)](#noise-conditional-score-networks-ncsn)
   - [Langevin Dynamics for Sampling](#langevin-dynamics-for-sampling)
     - [Langevin Dynamics](#langevin-dynamics)
 - [Unified Framework by Stochastic Differential Equations (SDE)](#unified-framework-by-stochastic-differential-equations-sde)
@@ -42,6 +42,7 @@ Some good reviews:
 2. [What are Diffusion Models?](https://lilianweng.github.io/posts/2021-07-11-diffusion-models/) 
 3. [Generative Modeling by Estimating Gradients of the Data Distribution](https://yang-song.net/blog/2021/score/)
 4. [Understanding Diffusion Models: A Unified Perspective](https://ar5iv.labs.arxiv.org/html/2208.11970)
+5. [How to Train Your Energy-Based Models](https://arxiv.org/abs/2101.03288)
    
 ## DDPM Formulation
 Given the data distribution $\x_0\sim q(\x_0)$ which is unknown, we want to learn an approximation $p_\theta (\x_0)$ that we can sample from. It is similar to variational autoencoder (VAE) or hierarchical VAE in the form, e.g., it also has encoding process (forward process) and decoding process (reverse process) and minimizes ELBO, but with multiple high dimensional latent variables.
@@ -244,32 +245,26 @@ In DDPM, we need to go through every forward steps to sample in backward process
 
 # Connection with Score-based DM
 
-## Score Matching
+## Score and Score Matching
 
-Score of a probability density function $p(\x)$ is defined as $\nabla_{\x}\log p$. For example, if $p_{\bm{\theta}}$ is Gaussian distributed, $\nabla_{\x}\log p = -\frac{\x-\bm{\mu}}{\sigma^2} = -\frac{\bm{\epsilon}}{\sigma}$ (standardization). We want to learn a score model $\bm{s}\_\theta(\x)=\nabla_{\x}\log p_\theta$ to approximate $\nabla_{\x}\log p$ because we can draw samples from the approximated score function. To train $\bm{s}_\theta$, we minimize the Fisher Divergence, which is also called score matching,
+Score of a probability density function $p(\x)$ is defined as $\nabla_{\x}\log p$. For example, if $p$ is Gaussian distributed, $\nabla_{\x}\log p = -\frac{\x-\bm{\mu}}{\sigma^2} = -\frac{\bm{\epsilon}}{\sigma}$ (standardization). We want to learn a score model $\bm{s}\_\theta(\x)=\nabla_{\x}\log p_\theta$ to approximate $\nabla_{\x}\log p_{data}$ because we can draw samples from the approximated score function. To train $\bm{s}_\theta$, we minimize the Fisher Divergence, which is also called score matching,
 
 $$
+\begin{equation}
 D_F\sbr{p_{data}\mid p_\theta} = \mathbb{E}_{p_{data}}\sbr{\frac{1}{2}\lVert\nabla_{\x}\log p_{data}(\x) - \bm{s}_\theta(\x)\rVert^2}.
+\end{equation}
 $$
 
-However, $p_{data}$ is unknown. It can be replaced by the derivative of $\bm{s}\_\theta(\x)$ to eliminate the unknown $p_{data}$, 
+However, $p_{data}$ is unknown. It can be replaced by the derivative of $\bm{s}\_\theta(\x)$ to eliminate the unknown $p_{data}$ (see the derivation from [How to Train Your Energy-Based Models](https://arxiv.org/abs/2101.03288)), 
 
 $$
+\begin{equation}
 D_F\sbr{p_{data}\mid p_\theta} = \mathbb{E}_{p_{data}}\sbr{Tr(\nabla_{\x} \bm{s}_\theta(\x)) + \frac{1}{2}\lVert \bm{s}_\theta(\x)\rVert^2} + \text{Constant}.
+\end{equation}
 $$
 
-Note that we use $\bm{s}\_\theta(\x)$ to approximate the $\nabla_{\x}\log p_{data}(\x)$. Hence, $Tr(\nabla_{\x} \bm{s}_\theta(\x))$ is actually the second derivative.  It raises another problem that the computation of the trace, which cannot be scaled to high dimensionality.
+Note that we use $\bm{s}\_\theta(\x)$ to approximate $\nabla_{\x}\log p_{data}(\x)$. Hence, $\nabla_{\x} \bm{s}_\theta(\x)$ is a approximation of the second derivative.  
 
-To circumvent the computation of $Tr(\nabla_{\x}^2\log p_{\bm{\theta}}(\x))$, we can use either **Denoising Score Matching** or **Sliced score matching**. Here, we focus on the former which is used in [Noise Conditional Score Networks](https://arxiv.org/abs/1907.05600). The idea is that we purturb the data $\x$ with a pre-specified noise distribution $q_{\sigma}(\tilde{\x}\mid\x)$ and minimize
-
-$$
- \mathbb{E}_{q_{\sigma}}\mathbb{E}_{p_{data}}\sbr{\frac{1}{2}\lVert\bm{s}_\theta(\tilde{\x}) - \nabla_{\tilde{\x}} q_{\sigma}(\tilde{\x}\mid\x)\rVert^2}.
-$$
-
-Note that $\bm{s}\_\theta(\tilde{\x}) = \nabla_{\tilde{\x}} q_{\sigma}(\tilde{\x}\mid\x) \approx \nabla_{\x}\log p_{data}(\x)$ is true only when the noise level $\sigma$ is small enough, which leads to $\bm{s}\_\theta(\tilde{\x}) \approx p_{data}(\x)$. There are also two problems:
-
-- Inaccurate score estimation in low data density
-- Slow mixing of Langevin dynamics
 
 ## DDPM to Score Matching (Tweedie's Formula)
 
@@ -341,7 +336,7 @@ $$
 \nabla_{\x_t}\log p(\x_t) + \gamma \nabla_{\x_t}\log p(y\mid\x_t).
 $$
 
-One of the drawbacks of the classifier guidance is that the classifier has to be trained separately. In most of work, $\bm{\epsilon}\_\theta(\x_t, t)$ is replaced by the conditioned version $\bm{\epsilon}\_\theta(\x_t, t, y)$ in Eq. (9).
+One of the drawbacks of the classifier guidance is that the classifier has to be trained separately. In most of work, $\bm{\epsilon}\_\theta(\x_t, t)$ is replaced by the conditioned version $\bm{\epsilon}\_\theta(\x_t, t, y)$ in Eq. (11).
 
 ## Classifier-free Guidance
 
@@ -375,7 +370,20 @@ $$
 
 The advantage of the classifier-free guidance is that we do not need to train the classifier separately. The conditioned model $\bm{\epsilon}\_\theta(\x_t, t, y)$ and unconditioned model $\bm{\epsilon}\_\theta(\x_t, t, \emptyset)$ are learned jointly by "turn off" a certain ratio of the labels (looks like dropout normalization). For example, if we set the ratio (threshold) to $p$, we generate a mask `mask = torch.rand(cemb.shape[0])<threshold` where `cemb` is a batch of label embeddings. Then, we "turn off" these labels, i.e., `cemb[np.where(mask)[0]] = 0`. Finally, we add time embeddings and label embeddings, i.e., `emb = cemb + temb` to as the input to the backbone model.
 
-## Noise Conditional Score Networks (NCSN)
+# Noise Conditional Score Networks (NCSN)
+
+In this work (NCSN), we still want to lean a score model $\bm{s}\_\theta$ via Eq. (8). However, Eq. (9) raises a problem that the computation of the trace term cannot be scaled to high dimensionality. To circumvent the computation of $Tr(\nabla_{\x}^2\log p_{\bm{\theta}}(\x))$, we can use either **Denoising Score Matching** or **Sliced score matching**. Here, we focus on the former which is used in [Noise Conditional Score Networks](https://arxiv.org/abs/1907.05600). The idea is that we create a data distribution that very close to the true data distribution by perturbing the data $\x$ with a pre-specified noise distribution $q_{\sigma}(\tilde{\x}\mid\x)\approx p_{data}(\x)$ and minimize
+
+$$
+ \mathbb{E}_{q_{\sigma}}\mathbb{E}_{p_{data}}\sbr{\frac{1}{2}\lVert\bm{s}_\theta(\tilde{\x}) - \nabla_{\tilde{\x}} q_{\sigma}(\tilde{\x}\mid\x)\rVert^2}.
+$$
+
+Note that $\bm{s}\_{\theta^\*}(\x)=\nabla_{\x}q_\sigma(\x)$ is almost surely by minimizing the above objective function. However, $\bm{s}\_{\theta^\*}(\x) = \nabla_{\x} q_{\sigma}(\x) \approx \nabla_{\x}\log p_{data}(\x)$ is true only when the noise level $\sigma$ is small enough, which leads to $q_{\sigma}(\x) \approx p_{data}(\x)$.
+
+There are also two problems in score matching:
+
+- Inaccurate score estimation in low data density
+- Slow mixing of Langevin dynamics
 
 To address these two issues, NCSN perturb the data in multiple steps.
 
