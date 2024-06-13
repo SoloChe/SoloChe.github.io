@@ -7,7 +7,7 @@ comments: true
 tags: Bayes Deep-Learning Diffusion-Model
 ---
 
-**Last update on 05/18/2024:** Updated Guidance and the next update would be the connection with score-based DM and neural ODEs.
+**Last update on 06/13/2024:** Updated part of NCSN and Langevin dynamics.
 
 
 **Table of Contents**
@@ -24,15 +24,16 @@ tags: Bayes Deep-Learning Diffusion-Model
 - [Connection with Score-based DM](#connection-with-score-based-dm)
   - [Score and Score Matching](#score-and-score-matching)
   - [DDPM to Score Matching (Tweedie's Formula)](#ddpm-to-score-matching-tweedies-formula)
-- [Connection with Guidance](#connection-with-guidance)
-  - [Classifier Guidance](#classifier-guidance)
-  - [Classifier-free Guidance](#classifier-free-guidance)
+  - [Guidance from Score](#guidance-from-score)
+    - [Classifier Guidance](#classifier-guidance)
+    - [Classifier-free Guidance](#classifier-free-guidance)
 - [Noise Conditional Score Networks (NCSN)](#noise-conditional-score-networks-ncsn)
-  - [Langevin Dynamics for Sampling](#langevin-dynamics-for-sampling)
-- [Unified Framework by Stochastic Differential Equations (SDE)](#unified-framework-by-stochastic-differential-equations-sde)
-  - [Forward](#forward)
-  - [Reverse](#reverse)
+  - [Langevin Dynamics (SDE)](#langevin-dynamics-sde)
     - [Sampling](#sampling)
+- [Unified Framework by Stochastic Differential Equations (SDE)](#unified-framework-by-stochastic-differential-equations-sde)
+  - [Forward Process](#forward-process)
+  - [Reverse](#reverse)
+    - [Sampling](#sampling-1)
 
 # Revisit of Denoising Diffusion Probabilistic Models (DDPM)
 
@@ -246,7 +247,13 @@ In DDPM, we need to go through every forward steps to sample in backward process
 
 ## Score and Score Matching
 
-Score of a probability density function $p(\x)$ is defined as $\nabla_{\x}\log p$. For example, if $p$ is Gaussian distributed, $\nabla_{\x}\log p = -\frac{\x-\bm{\mu}}{\sigma^2} = -\frac{\bm{\epsilon}}{\sigma}$ (standardization). We want to learn a score model $\bm{s}\_\theta(\x)=\nabla_{\x}\log p_\theta$ to approximate $\nabla_{\x}\log p_{data}$ because we can draw samples from the approximated score function. To train $\bm{s}_\theta$, we minimize the Fisher Divergence, which is also called score matching,
+In order to learn a distribution $p_{data}$, we need to represent it first. Usually, we define 
+
+$$p_\theta(\x) = \frac{e^{-f_\theta(\x)}}{Z_\theta}$$ 
+
+where it satisfies $p_\theta(\x) \geq 0$ and $\int p_\theta(\x)d\x = 1$. For a dataset $\{\x_1,...,\x_N\}$, we cannot use MLE to estimate the parameters $\theta$ because the likelihood is intractable due to the normalizing factor $Z_\theta$. Instead, we can use the score function to estimate the parameters. Score of a probability density function $p(\x)$ is defined as $\nabla_{\x}\log p(x)$. For example, if $p$ is Gaussian distributed, $\nabla_{\x}\log p(\x) = -\frac{\x-\bm{\mu}}{\sigma^2} = -\frac{\bm{\epsilon}}{\sigma}$ (standardization). More details can be found in [How to Train Your Energy-Based Models](https://arxiv.org/abs/2101.03288).
+
+We want to learn a score model $\bm{s}\_\theta(\x)=\nabla_{\x}\log p_\theta =  -\nabla_{\x}f_{\theta}(\x)\approx \nabla_{\x}\log p_{data}$. Then, we can draw samples from the approximated score function. Can we draw samples directly from score function? Yes, **Langevin Dynamics**.  To train $\bm{s}_\theta$, we minimize the Fisher Divergence, which is also called score matching,
 
 $$
 \begin{equation}
@@ -254,7 +261,8 @@ D_F\sbr{p_{data}\mid p_\theta} = \mathbb{E}_{p_{data}}\sbr{\frac{1}{2}\lVert\nab
 \end{equation}
 $$
 
-However, $p_{data}$ is unknown. It can be replaced by the derivative of $\bm{s}\_\theta(\x)$ to eliminate the unknown $p_{data}$ (see the derivation from [How to Train Your Energy-Based Models](https://arxiv.org/abs/2101.03288)), 
+However, $p_{data}$ is unknown. Fortunately, it can be replaced by the derivative of $\bm{s}\_\theta(\x)$ to eliminate the unknown $p_{data}$ (see the derivation from [Estimation of Non-Normalized Statistical Models
+by Score Matching](https://jmlr.org/papers/v6/hyvarinen05a.html)), 
 
 $$
 \begin{equation}
@@ -262,7 +270,7 @@ D_F\sbr{p_{data}\mid p_\theta} = \mathbb{E}_{p_{data}}\sbr{Tr(\nabla_{\x} \bm{s}
 \end{equation}
 $$
 
-Note that we use $\bm{s}\_\theta(\x)$ to approximate $\nabla_{\x}\log p_{data}(\x)$. Hence, $\nabla_{\x} \bm{s}_\theta(\x)$ is a approximation of the second derivative. One critical problem is that the score matching is not scalable to deep networks and high dimensional data due to the derivative term.
+One critical problem is that the score matching is not scalable to deep networks and high dimensional data due to the derivative term.
 
 
 ## DDPM to Score Matching (Tweedie's Formula)
@@ -299,7 +307,7 @@ $$
 
 Note that the true noise and the score looks very similar in the above equation. If we compare two type of $\x_0$ from score and noise, we have $\nabla_{\x_t}\log p(\x_t)=-\frac{1}{\sqrt{1-\bar{\alpha}}}\bm{\epsilon}$.
 
-# Connection with Guidance
+## Guidance from Score
 
 In guided diffusion models, we approximate the conditional data distribution $p(\x\mid y)$ instead of $p(\x)$. Hence, our goal is to learn the gradient $\nabla_{\x_t}\log p(\x_t\mid y)$ which can be written as 
 
@@ -309,7 +317,7 @@ $$
 \end{equation}
 $$
 
-## Classifier Guidance
+### Classifier Guidance
 
 In the classifier guidance, we have a classifier $\bm{C}_\phi$ which is used to predict the label $y$ given noised data $\x_t$. The gradient of the classifier is used as guidance, i.e.,
 
@@ -337,7 +345,7 @@ $$
 
 One of the drawbacks of the classifier guidance is that the classifier has to be trained separately. In most of work, $\bm{\epsilon}\_\theta(\x_t, t)$ is replaced by the conditioned version $\bm{\epsilon}\_\theta(\x_t, t, y)$ in Eq. (11).
 
-## Classifier-free Guidance
+### Classifier-free Guidance
 
 To avoid the classifier, we need to reconsider the term $\nabla_{\x_t}\log p(y\mid\x_t)$. With Bayes' theorem, we have
 
@@ -371,7 +379,7 @@ The advantage of the classifier-free guidance is that we do not need to train th
 
 # Noise Conditional Score Networks (NCSN)
 
-In the [Generative Modeling by Estimating Gradients of the Data Distribution](https://arxiv.org/abs/1907.05600), the authors propose a score-based model called Noise Conditional Score Networks (NCSN). To circumvent the direct computation of $Tr(\nabla_{\x}^2\log p_{\bm{\theta}}(\x))$, **Denoising Score Matching** or **Sliced score matching** are proposed. Here, we focus on the former which is used in NCSN. The idea is that we create a data distribution that very close to the true data distribution by perturbing the data $\x$ with a pre-specified noise distribution $q_{\sigma}(\tilde{\x}\mid\x)\approx p_{data}(\x)$ and minimize
+In the [Generative Modeling by Estimating Gradients of the Data Distribution](https://arxiv.org/abs/1907.05600), the authors propose a score-based model called Noise Conditional Score Networks (NCSN). To circumvent the direct computation of $Tr(\nabla_{\x}^2\log p_{\bm{\theta}}(\x))$, **Denoising Score Matching** or **Sliced score matching** are proposed. Here, we focus on the former. The idea is that we create a data distribution that very close to the true data distribution by perturbing the data $\x$ with a pre-specified noise distribution $q_{\sigma}(\tilde{\x}\mid\x)\approx p_{data}(\x)$ and minimize
 
 $$
  \mathbb{E}_{q_{\sigma}}\mathbb{E}_{p_{data}}\sbr{\frac{1}{2}\lVert\bm{s}_\theta(\tilde{\x}) - \nabla_{\tilde{\x}} q_{\sigma}(\tilde{\x}\mid\x)\rVert^2}.
@@ -381,24 +389,47 @@ Note that $\bm{s}\_{\theta^\*}(\x)=\nabla_{\x}q_\sigma(\x)$ is almost surely by 
 
 There are two problems in score matching:
 
-- Inaccurate score estimation in low data density
-- Slow mixing of Langevin dynamics
+- **Inaccurate score estimation in low data density regions:** the data often concentrate on low dimensional manifolds embedded in a high dimensional space (a.k.a., the ambient space). It means that the data don't cover the whole $\mathbb{R}^D$ space. Hence, the score estimation is inaccurate in the low data density regions. Since the sampling is a iterative process, the inaccurate score estimation will lead to a biased sampling process.
+- **Slow mixing of Langevin dynamics:** sampling process may be very slow if the distribution has 2 modes and they are separated by a low density region. The Langevin dynamics may be trapped in the low density region and cannot move to the other mode. It can be sovled by annealed Langevin dynamics.
 
-To address these two issues, NCSN perturbs the data in multiple steps.
+NCSN perturbs the data in multiple steps.
 
-## Langevin Dynamics for Sampling
+## Langevin Dynamics (SDE)
+
+It can be represented as Ito's diffusion
 
 $$
-\x_{i+1} \leftarrow \x_i + \epsilon\nabla_{\x}\log p(\x) + \sqrt{2\epsilon}\bm{z}_i \quad i=0,1,...,T,
+\begin{aligned}
+d\x_t &= -\nabla_{\x}V(\x)dt + \sqrt{2}d\bm{w}_t \\
+      &= -\nabla_{\x}V(\x)dt + \sqrt{2dt}\bm{z}_t, \quad \bm{z}_t\sim\N(0,\I).
+\end{aligned}
 $$
 
-<!-- - $\bm{s_\theta}:\mathbb{R}^D \rightarrow \mathbb{R}^D$: network trained to approximate the score of $p_{data}(\x)$
-- $\bm{z}_i\sim\N\nbr{\bm{0},\bm{I}}$.  -->
+where $\bm{w}_t\sim\N(0,\bm{t})$ is the standard Wiener process and $V(\x)$ is the potential energy. The steady state distribution of the above SDE can be determined by the [Fokker-Plank equation](https://en.wikipedia.org/wiki/Fokker%E2%80%93Planck_equation) which is a partial differential equation (PDE) that describes the evolution of a probability distribution over time under the effect of drift forces and random (or noise) forces. To be more specific, we want to find the stationary distribution $p(\x)$ that satisfies the following equation
+
+$$
+\frac{\partial p(\x,t)}{\partial t} = \nabla_{\x}\Big(\nabla_{\x}V(\x)p(\x,t)\Big) + \nabla_{\x}\Big(p(\x,t)\Big) = 0
+$$
+
+which has the equilibrium distribution  $p(\x) \propto e^{-V(\x)}$. We hope that the distribution $p(\x)$ is close to the true data distribution $p_{data}(\x)$ in our case. Recall that $p_\theta(\x) = \frac{e^{-f_\theta(\x)}}{Z_\theta}$, we can set $V(\x) = f_\theta(\x)$ and then $\nabla_{\x}V(\x) = \bm{s}_\theta(\x)$.
+
+### Sampling
+The discretization of the above SDE can be written as
+
+$$
+\x_{t+\epsilon} = \x_{t} - \epsilon\bm{s}_{\theta}(\x) + \sqrt{2\epsilon}\bm{z}_t.
+$$
+
+The sampling can be done by iteratively updating the data $\x$ with the above equation. In NCSN, the sampling process is slightly modified by using different step length at each noise level (annealed Langevin dynamics). The step length is set to $\alpha_i = \epsilon \frac{\sigma_i}{\sigma_L}$. The sampling process is
+
+$$
+\x_{t} \leftarrow \x_{t-1} + \frac{\alpha_i}{2}\bm{s}_\theta(\x,\sigma_i) + \sqrt{\alpha_i}\bm{z}_i \quad t=0,1,...,T, \quad i=1,...,L.
+$$
 
 # Unified Framework by Stochastic Differential Equations (SDE)
 
-In the work [Score-Based Generative Modeling through Stochastic Differential Equations](https://arxiv.org/abs/2011.13456), the authors propose a unified framework to connect the score-based model NCSN and DDPM,. The idea is to use the SDE to model the data distribution. The SDE is defined as
-## Forward
+In the work [Score-Based Generative Modeling through Stochastic Differential Equations](https://arxiv.org/abs/2011.13456), the authors propose a unified framework to connect the score-based model NCSN and DDPM. The authors regard the forward (adding noise) and backward (denoising sampling) process as SDE and reverse SDE respectively.
+## Forward Process
 $$
 d\x = \f(\x, t)dt + g(t)d\w
 $$
