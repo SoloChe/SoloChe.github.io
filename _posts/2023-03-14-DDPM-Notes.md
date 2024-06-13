@@ -29,7 +29,6 @@ tags: Bayes Deep-Learning Diffusion-Model
   - [Classifier-free Guidance](#classifier-free-guidance)
 - [Noise Conditional Score Networks (NCSN)](#noise-conditional-score-networks-ncsn)
   - [Langevin Dynamics for Sampling](#langevin-dynamics-for-sampling)
-    - [Langevin Dynamics](#langevin-dynamics)
 - [Unified Framework by Stochastic Differential Equations (SDE)](#unified-framework-by-stochastic-differential-equations-sde)
   - [Forward](#forward)
   - [Reverse](#reverse)
@@ -263,7 +262,7 @@ D_F\sbr{p_{data}\mid p_\theta} = \mathbb{E}_{p_{data}}\sbr{Tr(\nabla_{\x} \bm{s}
 \end{equation}
 $$
 
-Note that we use $\bm{s}\_\theta(\x)$ to approximate $\nabla_{\x}\log p_{data}(\x)$. Hence, $\nabla_{\x} \bm{s}_\theta(\x)$ is a approximation of the second derivative.  
+Note that we use $\bm{s}\_\theta(\x)$ to approximate $\nabla_{\x}\log p_{data}(\x)$. Hence, $\nabla_{\x} \bm{s}_\theta(\x)$ is a approximation of the second derivative. One critical problem is that the score matching is not scalable to deep networks and high dimensional data due to the derivative term.
 
 
 ## DDPM to Score Matching (Tweedie's Formula)
@@ -372,7 +371,7 @@ The advantage of the classifier-free guidance is that we do not need to train th
 
 # Noise Conditional Score Networks (NCSN)
 
-In this work (NCSN), we still want to lean a score model $\bm{s}\_\theta$ via Eq. (8). However, Eq. (9) raises a problem that the computation of the trace term cannot be scaled to high dimensionality. To circumvent the computation of $Tr(\nabla_{\x}^2\log p_{\bm{\theta}}(\x))$, we can use either **Denoising Score Matching** or **Sliced score matching**. Here, we focus on the former which is used in [Noise Conditional Score Networks](https://arxiv.org/abs/1907.05600). The idea is that we create a data distribution that very close to the true data distribution by perturbing the data $\x$ with a pre-specified noise distribution $q_{\sigma}(\tilde{\x}\mid\x)\approx p_{data}(\x)$ and minimize
+In the [Generative Modeling by Estimating Gradients of the Data Distribution](https://arxiv.org/abs/1907.05600), the authors propose a score-based model called Noise Conditional Score Networks (NCSN). To circumvent the direct computation of $Tr(\nabla_{\x}^2\log p_{\bm{\theta}}(\x))$, **Denoising Score Matching** or **Sliced score matching** are proposed. Here, we focus on the former which is used in NCSN. The idea is that we create a data distribution that very close to the true data distribution by perturbing the data $\x$ with a pre-specified noise distribution $q_{\sigma}(\tilde{\x}\mid\x)\approx p_{data}(\x)$ and minimize
 
 $$
  \mathbb{E}_{q_{\sigma}}\mathbb{E}_{p_{data}}\sbr{\frac{1}{2}\lVert\bm{s}_\theta(\tilde{\x}) - \nabla_{\tilde{\x}} q_{\sigma}(\tilde{\x}\mid\x)\rVert^2}.
@@ -380,24 +379,25 @@ $$
 
 Note that $\bm{s}\_{\theta^\*}(\x)=\nabla_{\x}q_\sigma(\x)$ is almost surely by minimizing the above objective function. However, $\bm{s}\_{\theta^\*}(\x) = \nabla_{\x} q_{\sigma}(\x) \approx \nabla_{\x}\log p_{data}(\x)$ is true only when the noise level $\sigma$ is small enough, which leads to $q_{\sigma}(\x) \approx p_{data}(\x)$.
 
-There are also two problems in score matching:
+There are two problems in score matching:
 
 - Inaccurate score estimation in low data density
 - Slow mixing of Langevin dynamics
 
-To address these two issues, NCSN perturb the data in multiple steps.
+To address these two issues, NCSN perturbs the data in multiple steps.
 
 ## Langevin Dynamics for Sampling
 
-- $\bm{s_\theta}:\mathbb{R}^D \rightarrow \mathbb{R}^D$: network trained to approximate the score of $p_{data}(\x)$
-
-### Langevin Dynamics
 $$
 \x_{i+1} \leftarrow \x_i + \epsilon\nabla_{\x}\log p(\x) + \sqrt{2\epsilon}\bm{z}_i \quad i=0,1,...,T,
 $$
-where $\bm{z}_i\sim\N\nbr{\bm{0},\bm{I}}$. 
+
+<!-- - $\bm{s_\theta}:\mathbb{R}^D \rightarrow \mathbb{R}^D$: network trained to approximate the score of $p_{data}(\x)$
+- $\bm{z}_i\sim\N\nbr{\bm{0},\bm{I}}$.  -->
 
 # Unified Framework by Stochastic Differential Equations (SDE)
+
+In the work [Score-Based Generative Modeling through Stochastic Differential Equations](https://arxiv.org/abs/2011.13456), the authors propose a unified framework to connect the score-based model NCSN and DDPM,. The idea is to use the SDE to model the data distribution. The SDE is defined as
 ## Forward
 $$
 d\x = \f(\x, t)dt + g(t)d\w
