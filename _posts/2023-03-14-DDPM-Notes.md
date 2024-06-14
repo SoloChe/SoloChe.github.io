@@ -390,9 +390,23 @@ Note that $\bm{s}\_{\theta^\*}(\x)=\nabla_{\x}q_\sigma(\x)$ is almost surely by 
 There are two problems in score matching:
 
 - **Inaccurate score estimation in low data density regions:** the data often concentrate on low dimensional manifolds embedded in a high dimensional space (a.k.a., the ambient space). It means that the data don't cover the whole $\mathbb{R}^D$ space. Hence, the score estimation is inaccurate in the low data density regions. Since the sampling is a iterative process, the inaccurate score estimation will lead to a biased sampling process.
-- **Slow mixing of Langevin dynamics:** sampling process may be very slow if the distribution has 2 modes and they are separated by a low density region. The Langevin dynamics may be trapped in the low density region and cannot move to the other mode. It can be sovled by annealed Langevin dynamics.
+- **Slow mixing of Langevin dynamics:** sampling process may be very slow if the distribution has 2 modes and they are separated by a low density region. The Langevin dynamics may be trapped in the low density region and cannot move to the other mode. 
 
-NCSN perturbs the data in multiple steps.
+In NCSN, data are perturbed by different levels of noise. Let $\sigma_1>\sigma_2>...>\sigma_L$ be the noise levels which is a positive geometric sequence. The perturbed data distribution is written as $q_{\sigma_i}(\tilde{\x})=\int p_{data}(\x)p(\tilde{\x} \mid \x)d\x = \int p_{data}(\x)\N(\tilde{\x}\mid \x, \sigma_i) d\x $. We choose the noise function $q_{\sigma_i}(\tilde{\x} \mid \x) = \N(\x,\sigma_i^2\I)$ and $(\tilde{\x}) = \nabla_{\tilde{\x}}\log q_{\sigma_i}(\tilde{\x}\mid \x) = -\frac{\tilde{\x}-\x}{\sigma_i^2}$. Intuitively, the perturbed data with different noise levels fill the low density regions. It may be regarded as a data augmentation technique. Also, these perturbed data build a "tunnel" between the true data distribution and the prior distribution ($\N(0,I)$), which helps improve the mixing rate of Langevin dynamics on multimodal distributions.
+
+For a given noise level $\sigma_i$, the objective is
+
+$$
+\ell_i(\theta;\sigma_i) = \mathbb{E}_{q_{\sigma_i}}\mathbb{E}_{p_{data}}\sbr{\frac{1}{2}\lVert\bm{s}_\theta(\tilde{\x},\sigma_i) + \frac{\tilde{\x}-\x}{\sigma_i^2}\rVert^2_2}.
+$$
+
+Then, the total objective is
+
+$$
+\mathcal{L}(\theta) = \sum_{i=1}^L\lambda(\sigma_i)\ell_i(\theta;\sigma_i).
+$$
+
+The author found that $\lVert\bm{s}_\theta(\tilde{\x},\sigma_i)\rVert_2\propto \frac{1}{\sigma_i}$. To balance the contribution of each noise level, the weight $\lambda(\sigma_i)$ is set to $\sigma_i^2$ to make the objective scale-invariant $\frac{\tilde{\x}-\x}{\sigma_i}\sim \N(0,\I)$.
 
 ## Langevin Dynamics (SDE)
 
@@ -426,6 +440,7 @@ $$
 \x_{t} \leftarrow \x_{t-1} + \frac{\alpha_i}{2}\bm{s}_\theta(\x,\sigma_i) + \sqrt{\alpha_i}\bm{z}_i \quad t=0,1,...,T, \quad i=1,...,L.
 $$
 
+Note that there are 2 loops in the sampling process. The outer loop is for the noise level and the inner loop is for the Langevin dynamics. 
 # Unified Framework by Stochastic Differential Equations (SDE)
 
 In the work [Score-Based Generative Modeling through Stochastic Differential Equations](https://arxiv.org/abs/2011.13456), the authors propose a unified framework to connect the score-based model NCSN and DDPM. The authors regard the forward (adding noise) and backward (denoising sampling) process as SDE and reverse SDE respectively.
