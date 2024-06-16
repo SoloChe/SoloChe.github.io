@@ -1,0 +1,42 @@
+{% if site.enable_math %}
+  {% unless page.pseudocode %}
+    <!-- MathJax -->
+    <script type="text/javascript">
+      window.MathJax = {
+        tex: {
+          tags: 'ams',
+          packages: {'[+]': ['configmacros']},
+          macros: {
+                      R: '{\\mathbb{R}}',
+                      f: '{\\bf f}',
+                      w: '{\\boldsymbol{w}}',
+                      x: '{\\boldsymbol{x}}',
+                      I: '{\\boldsymbol{I}}',
+                      nbr: ['\\left(#1\\right)',1],
+                      sbr: ['\\left[#1\\right]',1],
+                      bm: ['\\boldsymbol{#1}',1, ],
+                      bs: ['\\boldsymbol{#1}',1, ],
+                      N: '{\\mathcal{N}}',
+                      argmax:['\\underset{#1}{\\operatorname{argmax}}', 1],
+                      argmin:['\\underset{#1}{\\operatorname{argmin}}', 1]
+                    },
+            inlineMath: [['$', '$'], ["\\(", "\\)"]],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+      };
+    </script>
+    <script
+      defer
+      type="text/javascript"
+      id="MathJax-script"
+      src="{{ site.third_party_libraries.mathjax.url.js }}"
+      integrity="{{ site.third_party_libraries.mathjax.integrity.js }}"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      defer
+      src="{{ site.third_party_libraries.polyfill.url.js }}"
+      crossorigin="anonymous"
+    ></script>
+  {% endunless %}
+{% endif %}
