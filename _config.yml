@@ -148,7 +148,6 @@ kramdown:
       start_line: 1
 
 # Includes & excludes
-# Includes & excludes
 include: ["_pages"]
 exclude:
   - bin/
