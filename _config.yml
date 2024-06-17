@@ -148,16 +148,31 @@ kramdown:
       start_line: 1
 
 # Includes & excludes
-include: ['_pages']
+# Includes & excludes
+include: ["_pages"]
 exclude:
-  - bin
+  - bin/
+  - CONTRIBUTING.md
+  - CUSTOMIZE.md
+  - Dockerfile
+  - docker-compose.yml
+  - docker-compose-slim.yml
+  - FAQ.md
   - Gemfile
   - Gemfile.lock
+  - INSTALL.md
+  - LICENSE
+  - lighthouse_results/
+  - package.json
+  - package-lock.json
+  - _pages/about_einstein.md
+  - purgecss.config.js
+  - README.md
+  - readme_preview/
   - vendor
 keep_files:
   - CNAME
   - .nojekyll
-  - .git
 
 # Plug-ins
 plugins:
@@ -177,12 +192,16 @@ plugins:
   - jekyll-twitter-plugin
   - jemoji
 
+
 # Sitemap settings
 defaults:
   - scope:
-      path:            "assets/**/*.*"
+      path: "assets"
     values:
-      sitemap:         false
+      sitemap: false
+
+sass:
+  style: compressed
 # Extras
 github: [metadata]
 
