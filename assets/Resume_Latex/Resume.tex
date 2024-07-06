@@ -38,9 +38,9 @@
 
 \section*{PROFESSIONAL SKILLS \& KNOWLEDGEasdasdas}
  \begin{itemize}	
- 	\item {\bf Programming Languages:} Python, Matlab, R%, C/C++(learning) test test
+ 	\item {\bf Programming Languages:} Python, Matlab, R
  	\item {\bf Skills:} Linux, Slurm, Git, MySQL, Bash script
- 	\item {\bf Research Interests:} Generative model, Medical imaging, Bayesian deep learning, Gaussian process, Active learning
+ 	\item {\bf Research Interests:} Generative models, Medical imaging, Bayesian statistics, Active learning
  \end{itemize}
 
 \section*{EDUCATION BACKGROUND}
@@ -66,8 +66,18 @@
         \hfill{2023-Present}
         \begin{itemize}[label=$\bullet$]
             \item \noindent {\bf Weakly-supervised Brain Tumor Segmentation}
-            \item \noindent {\bf Interpretable Medical Image Classification for Alzheimer's Disease}
-            \item \noindent {\bf Multi-modality Fusion for Traumatic Brain Injury Diagnosis}
+            \begin{itemize}[label=$-$]
+	            \item Developed a weakly-supervised brain tumor segmentation framework using diffusion models
+	            \item Proposed a novel hyperparameter selection method without ground truth
+	        \end{itemize}
+            \item \noindent {\bf Interpretable Medical Image Classification}
+            \begin{itemize}[label=$-$]
+				\item Trying to utilizing diffusion models as interpretable medical image classifier with conterfactual 
+			\end{itemize}
+            \item \noindent {\bf Multi-modality Fusion for Headache Diagnosis}
+            \begin{itemize}[label=$-$]
+				\item Utilized CLIP model for multi-modality fusion in headache diagnosis
+			\end{itemize}
         \end{itemize}
         
         
@@ -79,39 +89,20 @@
 		\begin{itemize}[label=$\bullet$]
 		    \item Physics-informed neural network (PINN) for the prediction of COVID outbreak 
 		    \begin{itemize}[label=$-$]
-	            \item Trying to include Bayesian framework in traditional PINN for robust prediction
-	        \end{itemize}
-	        
-		    \item Deep Gaussian process (DGP)
-		    \begin{itemize}[label=$-$]
-	            \item Working on DGP with active learning for robust sequential design 
+	            \item Included Bayesian framework in traditional PINN for robust prediction
 	        \end{itemize}
 		\end{itemize}
 		
 	    \item \noindent {\bf Surrogate Modeling and Active Learning/Sequential Design}
 	    \begin{itemize}[label=$\bullet$]
-	        %\item Diverse gradient embeddings (BADGE) for regression case (current research)
 	        \item Developed a novel surrogate model which combines generalized polynomial chaos and stochastic kriging model for efficient surrogate modeling of stochastic systems
 	        \begin{itemize}[label=$-$]
-	            \item Significantly reduced computational budget compared to Monte Carlo simulation
-	            \item Achieved high accuracy with much smaller computational budget compared to Monte Carlo simulation
+	            \item Significantly reduced computational budget and without loss of accuracy 
 	        \end{itemize}
 	        
-	        \item Developed a new expected improvement-based sampling algorithm with Gaussian process
+	        \item Developed single-section and batch-selection sampling algorithms with Gaussian process
 	        \begin{itemize}[label=$-$]
-	            \item Reduced size of training set by around 90\% compared to traditional one-shot design
-	            \item Achieved high accuracy with only a small fraction of training set is used 
-	        \end{itemize}
-	        
-	        \item Developed a K-center-based sampling algorithm with relevant vector machine
-	        \begin{itemize}[label=$-$]
-	            \item Significantly reduced required training data to achieve high accuracy
-	        \end{itemize}
-	        
-	        \item Developed a batch-sampling strategy for efficient contour estimation
-	        \begin{itemize}[label=$-$]
-	            \item Significantly reduced training time compared to the single-sample selection strategy
-	            \item Outperform the state-of-the-art method (weighted K-means selection)
+	            \item Significantly reduced the size of training set for efficient surrogate modeling
 	        \end{itemize}
 	    \end{itemize}
 	    
@@ -120,7 +111,6 @@
 		    \item Developed uncertainty quantification framework using generalized polynomial chaos expansion for machining process 
 		    \begin{itemize}[label=$-$]
 		    \item Reduced computational budget of time-domain simulations for uncertainty quantification
-		    \item Devised maximum entropy method for density estimation  
 		    \end{itemize}
 		\end{itemize}
 	\end{itemize}
@@ -157,6 +147,8 @@
 %\noindent{\bf JOURNAL PUBLICATIONS}
 \section*{PUBLICATIONS}
 \begin{enumerate}
+	\item {\bf Che, Y.}, Rafsani, F., Shah, J., Siddiquee, M. M. R., and Wu, T. "AnoFPDM: Anomaly Segmentation with Forward Process of Diffusion Models for Brain MRI," \textit{arXiv preprint} arXiv:2404.15683 (2024).
+
 	\item {\bf Che, Y.}, Muller, J and Cheng, C. ``Dispersion-enhanced sequential batch sampling for contour estimation,'' \textit{Quality and Reliability Engineering International} 40 (2024): 131–144. \url{https://doi.org/10.1002/qre.3245} 
 
 	\item {\bf Che, Y.} and Cheng, C. ``Physical-statistical learning towards resilience assessment for power generating systems,'' \textit{Physica A: Statistical Mechanics and its Applications} 615 (2023): 128584. \url{https://doi.org/10.1016/j.physa.2023.128584}

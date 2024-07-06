@@ -2,11 +2,10 @@ github_users:
   - SoloChe
  
 github_repos:
+  - SoloChe/AnoFPDM
   - SoloChe/cls-free-diffusion
   - SoloChe/PINN_SEIR_torch
   - SoloChe/PINN_torch
-  - SoloChe/RVM_Active_Learning
-  - SoloChe/GPR_EI
  
 
   
