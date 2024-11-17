@@ -3,7 +3,9 @@
 \usepackage{hyperref}
 \title{\bf  Yiming Che \vspace{-0.6em}}
 
-\author{+1(607)-338-8871 | yche1@binghamton.edu | \href{https://soloche.github.io}{homepage} | \href{https://github.com/SoloChe}{github}}
+% \author{+1(607)-338-8871 | yche1@binghamton.edu | \href{https://soloche.github.io}{homepage} | \href{https://github.com/SoloChe}{github}}
+
+\author{+1(607)-338-8871 | yche1@binghamton.edu | soloche.github.io | github.com/SoloChe}
 
 \date{}
 \usepackage{titling}
@@ -39,7 +41,7 @@
 \section*{PROFESSIONAL SKILLS \& KNOWLEDGE}
  \begin{itemize}	
  	\item {\bf Programming Languages:} Python, Matlab, R
- 	\item {\bf Skills:} Linux, Slurm, Git, MySQL, Bash script
+ 	\item {\bf Skills:} Linux, Slurm, Git/GitHub, MySQL, Pandas, Bash script, PyTorch/TensorFlow, SKlearn
  	\item {\bf Research Interests:} Generative models, Medical imaging, Bayesian statistics, Active learning
  \end{itemize}
 
@@ -62,63 +64,47 @@
 
 \section*{PROFESSIONAL EXPERIENCE}
 \begin{itemize}
-	\item \noindent {\bf Postdoctoral Scholar at Arizona State University} (Advised by Dr. Teresa Wu)
-        \hfill{2023-Present}
+	\item \noindent {\bf Postdoctoral Scholar at Arizona State University} (Advised by Dr. Teresa Wu)\\
+        \hfill{Aug. 2023 - Present, Tempe, AZ}
         \begin{itemize}[label=$\bullet$]
-            \item \noindent {\bf Weakly-supervised Brain Tumor Segmentation}
+            \item \noindent {\bf Generative Models on Medical imaging}
             \begin{itemize}[label=$-$]
-	            \item Developed a weakly-supervised brain tumor segmentation framework using diffusion models
-	            \item Proposed a novel hyperparameter selection method without ground truth
-	        \end{itemize}
-            \item \noindent {\bf Interpretable Medical Image Classification}
-            \begin{itemize}[label=$-$]
-				\item Trying to utilizing diffusion models as interpretable medical image classifier with conterfactual 
-			\end{itemize}
-            \item \noindent {\bf Multi-modality Fusion for Headache Diagnosis}
-            \begin{itemize}[label=$-$]
-				\item Utilized CLIP model for multi-modality fusion in headache diagnosis
+				\item Developed a fully weakly-supervised brain tumor segmentation framework using guided diffusion models
+				\item Developed a high-resolution PET image synthesis strategy using latent diffusion models
+				\item Adopted Cycle-GAN model for harmonizing FBP and PiB tracer in amyloid PET
 			\end{itemize}
 
-			\item \noindent {\bf Biomedical Age Prediction with Epigenetic Data for Alzheimer's Disease Detection}
-			\begin{itemize}[label=$-$]
-				\item Prepared NIH RO1 grant proposal
-				\item Utilized Cycle-GAN model for epigenetic data translation
-				\item Utilized epigenetic data for biomedical age prediction 
+            
+            \item \noindent {\bf Interpretable Medical Image Classification}
+            \begin{itemize}[label=$-$]
+				\item Trying to utilize diffusion models as interpretable medical image classifier with conterfactual 
+			\end{itemize}
+            \item \noindent {\bf Multi-modality Models for Headache Diagnosis}
+            \begin{itemize}[label=$-$]
+				\item Utilized BioMedCLIP model for in headache diagnosis and subtype discovery using patient's MRI and clinical notes
 			\end{itemize}
         \end{itemize}
         
         
-	\item \noindent {\bf Research Assistant at Binghamton University} (Advised by Dr. Changqing Cheng)
-	\hfill{2019-2023}
+	\item \noindent {\bf Research Assistant at Binghamton University} (Advised by Dr. Changqing Cheng)\\
+	\hfill{Feb. 2019 - May 2023, Binghamton, NY}
 	\begin{itemize}[label=$\bullet$]
 	
-	    \item \noindent {\bf COVID Outbreak Prediction}
-		\begin{itemize}[label=$\bullet$]
-		    \item Physics-informed neural network (PINN) for the prediction of COVID outbreak 
-		    \begin{itemize}[label=$-$]
-	            \item Included Bayesian framework in traditional PINN for robust prediction
-	        \end{itemize}
+	    \item \noindent {\bf Physics-informed Neural Network (PINN) for the prediction of COVID outbreak }
+		\begin{itemize}[label=$-$]
+	        \item Included Bayesian framework in traditional PINN for robust prediction
 		\end{itemize}
 		
 	    \item \noindent {\bf Surrogate Modeling and Active Learning/Sequential Design}
-	    \begin{itemize}[label=$\bullet$]
+	    \begin{itemize}[label=$-$]
 	        \item Developed a novel surrogate model which combines generalized polynomial chaos and stochastic kriging model for efficient surrogate modeling of stochastic systems
-	        \begin{itemize}[label=$-$]
-	            \item Significantly reduced computational budget and without loss of accuracy 
-	        \end{itemize}
-	        
+	       
 	        \item Developed single-section and batch-selection sampling algorithms with Gaussian process
-	        \begin{itemize}[label=$-$]
-	            \item Significantly reduced the size of training set for efficient surrogate modeling
-	        \end{itemize}
 	    \end{itemize}
 	    
 		\item \noindent {\bf Uncertainty Quantification for Machining Process}
-		\begin{itemize}[label=$\bullet$]
+		\begin{itemize}[label=$-$]
 		    \item Developed uncertainty quantification framework using generalized polynomial chaos expansion for machining process 
-		    \begin{itemize}[label=$-$]
-		    \item Reduced computational budget of time-domain simulations for uncertainty quantification
-		    \end{itemize}
 		\end{itemize}
 	\end{itemize}
 \end{itemize}
@@ -132,8 +118,6 @@
 	\hfill{2024}
     \item Excellence in Systems Science Research Award, Binghamton University
 	\hfill{2023}
-    \item Graduate School Travel Grant, Binghamton University
-	\hfill{2022}
 	\item INFORMS Bonder Foundation Award
 	\hfill{2021}
 	\item Finalist, IISE-DAIS Mobile App Competition at 2021 IISE Annual Conference and Expo
@@ -150,23 +134,14 @@
 	\hfill{2015}
 \end{itemize}
 
-%\vspace{3mm}
-\section*{WORKING PAPERS}
-\begin{enumerate}
-	\item Unsupervised headache subtype discovery using diffusion model
-	
-	\item FBP and PiB tracer agreement in amyloid PET using modified Cycle-GAN model
-
-	\item Enhanced traumatic brain injury recovery classification with harmonized brain MRI and CT
-	
-	\item Improving headache detection on small T1-weighted MR dataset using pretrained large-scale contrastive language-image model
-\end{enumerate}
 
 \section*{PUBLICATIONS}
 \begin{enumerate}
-	\item Shah, J., Krell-Roeschc, J., {\bf Che, Y.}, Forzanie, E., Knopmanf, D.S., Cliff, R.J., Petersenc, R.C., Wu, T. and Geda, Y.E. ``Predicting cognitive decline from neuropsychiatric symptoms and Alzheimer’s disease biomarkers: A machine learning approach to a population-based data'' \textit{Journal of Alzheimer's Disease} (Under review)
+	\item Shah, J., {\bf Che, Y.}, Sohankar, J., Luo, J., Li, B., Su, Y. and Wu, T. ``Enhancing PET Quantification: MRI-guided Super-Resolution using Latent Diffusion Models'' \textit{Life} (Under review)
 	
-	\item {\bf Che, Y.}, Rafsani, F., Shah, J., Siddiquee, M. M. R. and Wu, T. ``AnoFPDM: Anomaly segmentation with forward Process of diffusion models for brain MRI" (submitted to WACV 2025). 
+	\item Shah, J., Krell-Roeschc, J., {\bf Che, Y.}, Forzanie, E., Knopmanf, D.S., Cliff, R.J., Petersenc, R.C., Wu, T. and Geda, Y.E. ``Predicting cognitive decline from neuropsychiatric symptoms and Alzheimer’s disease biomarkers: A machine learning approach to a population-based data'' \textit{Journal of Alzheimer's Disease} (In press)
+	
+	\item {\bf Che, Y.}, Rafsani, F., Shah, J., Siddiquee, M. M. R. and Wu, T. ``AnoFPDM: Anomaly segmentation with forward Process of diffusion models for brain MRI" \url{https://arxiv.org/abs/2404.15683} (Submitted to ASTAD workshop at WACV 2025).
 
 	\item Wan, J., Kataoka, J., Sivakumar, J., Pena, E., {\bf Che, Y.}, Sayama, H. and Cheng, C. ``Sparse Bayesian learning for sequential inference of network connectivity from Small Data'' \textit{IEEE Transactions on Network Science and Engineering} (In press)
 	
@@ -201,6 +176,7 @@
         \item Journal Reviewer 
         \begin{itemize}[label=$\bullet$]
             \item Physica D: Nonlinear Phenomena
+            \item Scientific Reports
         \end{itemize}
         
 	\item Student member, Student leadership board at IISE
