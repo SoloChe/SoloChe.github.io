@@ -17,3 +17,12 @@
 "Chaos":
   url: https://aip.scitation.org/journal/cha
   color: "#ff5900"
+
+"TNSE":
+  url: https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=6488902
+  color: "#ff5900"
+
+"arXiv":
+  url: https://arxiv.org/
+  color: "#ff5900"
+
