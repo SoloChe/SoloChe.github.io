@@ -6,7 +6,7 @@ permalink: /
 
 profile:
   align: right
-  image: prof_pic.jpg
+  image: prof_pic2.jpg
   # address: >
   #   <p>Dept. of SSIE</p>
   #   <p>Binghamton University</p>
