@@ -9,3 +9,29 @@ readers do not read off random characters that represent icons */
     content: unquote('"#{ $icon }"');
   }
 }
+
+.contact-icons i {
+  font-size: 0.8em; /* Adjust icon size here */
+  margin: 0 7px; /* Add horizontal spacing between icons */
+}
+
+.contact-icons {
+  display: flex;
+  justify-content: center; /* Center-align the icons */
+  gap: 0px; /* Add spacing between icons */
+  margin-top: 0;
+}
+
+// .contact-icons {
+//   display: flex;
+//   flex-direction: column; /* Stack icons vertically */
+//   align-items: center;    /* Center-align icons */
+//   gap: 15px;              /* Space between icons */
+//   margin-top: 20px;       /* Add margin to the entire block */
+//   margin-bottom: 20px;
+// }
+
+// .contact-icons a {
+//   display: inline-block;
+//   margin: 5px 0; /* Add vertical spacing to each link */
+// }
