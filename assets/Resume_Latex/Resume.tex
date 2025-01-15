@@ -1,11 +1,11 @@
 \documentclass[10pt]{article}
-\usepackage[margin = 1in]{geometry}
+\usepackage[margin = 0.5in]{geometry}
 \usepackage{hyperref}
 \title{\bf  Yiming Che \vspace{-0.6em}}
 
 % \author{+1(607)-338-8871 | yche1@binghamton.edu | \href{https://soloche.github.io}{homepage} | \href{https://github.com/SoloChe}{github}}
 
-\author{+1(607)-338-8871 | yche1@binghamton.edu | soloche.github.io | github.com/SoloChe}
+\author{+1(607)338-8871 $\vert$ yche1@binghamton.edu $\vert$ \href{https://soloche.github.io}{homepage} $\vert$ \href{https://github.com/SoloChe}{GitHub}}
 
 \date{}
 \usepackage{titling}
@@ -37,82 +37,117 @@
 	\maketitle
 
 \vspace{-5em}
-
 \section*{PROFESSIONAL SKILLS \& KNOWLEDGE}
- \begin{itemize}	
+\vspace{-0.5em}
+ \begin{itemize}
+	\setlength\itemsep{0.5pt}
  	\item {\bf Programming Languages:} Python, Matlab, R
- 	\item {\bf Skills:} Linux, Slurm, Git/GitHub, MySQL, PySpark, Pandas, Bash, PyTorch/TensorFlow, SKlearn
+ 	\item {\bf Skills:} Linux, Slurm, Git/GitHub, MySQL, PySpark, Pandas, Bash, PyTorch/TensorFlow, SKlearn, Hugging Face
  	\item {\bf Research Interests:} Generative models, Medical imaging, Bayesian statistics, Active learning
  \end{itemize}
 
+\vspace{-2em}
 \section*{EDUCATION BACKGROUND}
+\vspace{-0.5em}
 \begin{itemize}
-		\item \noindent{\bf Binghamton University, State University of New York, NY, United States
-		\\Department of Systems Science and Industrial Engineering}                                                           
-		\\Doctor of Philosophy in Systems Science \hfill May 2023 
-		\\Advisor: Dr. Changqing Cheng
+	\setlength\itemsep{0.5pt}
 
 	\item \noindent{\bf Binghamton University, State University of New York, NY, United States
-		\\Department of Systems Science and Industrial Engineering}                                                           
-	\\Master of Science in Industrial Engineering \hfill  May 2018\\
-	Advisor: Dr. Changqing Cheng
-	
+	\\Department of Systems Science and Industrial Engineering}                                                           
+	\\Doctor of Philosophy in Systems Science \hfill May 2023 
+	% \\Advisor: Dr. Changqing Cheng
+
+	\item \noindent{\bf Binghamton University, State University of New York, NY, United States
+	\\Department of Systems Science and Industrial Engineering}                                                           
+	\\Master of Science in Industrial Engineering \hfill  May 2018
+	% Advisor: Dr. Changqing Cheng
+
     \item \noindent{\bf Capital University of Economics and Business, Beijing, China
-         	\\Department of Industrial Engineering}
-            \\Bachelor of Science in Industrial Engineering \hfill July 2017 
+    \\Department of Industrial Engineering}
+    \\Bachelor of Science in Industrial Engineering \hfill July 2017 
 \end{itemize}
 
-
+\vspace{-2em}
 \section*{PROFESSIONAL EXPERIENCE}
+\vspace{-0.5em}
+
 \begin{itemize}
-	\item \noindent {\bf Postdoctoral Scholar at Arizona State University} (Advised by Dr. Teresa Wu)\\
-        \hfill{July. 2023 - Present, Tempe, AZ}
-        \begin{itemize}[label=$\bullet$]
-            \item \noindent {\bf Generative Models on Medical Imaging}
+	\setlength\itemsep{0.5pt}
+
+	\item \noindent {\bf Researcher at ASU-Mayo Center for Innovative Imaging}\\
+		\hfill{July. 2023 - Present, Tempe, AZ}
+		\vspace{-0.5em}
+		\begin{itemize}[label=$\bullet$]
+			\item \noindent {\bf Multi-modality Models}
+            \vspace{-0.5em}
             \begin{itemize}[label=$-$]
-				\item Developed a fully weakly-supervised anomaly detection/segmentation framework using guided diffusion models
-				\item Developed a high-resolution PET image synthesis strategy using latent diffusion models
-				\item Adopted Cycle-GAN for harmonizing FBP and PiB tracer in amyloid PET images
-				\item Trying to utilize diffusion models as interpretable medical image classifier with conterfactual
-				\item Exploring the potential of using vision autoregressive models in medical images 
+				\setlength\itemsep{0.5pt}
+				\item Finetuned BioMedCLIP model for headache diagnosis using patient's MRI and clinical notes. Achieved state-of-the-art performance in headache diagnosis with 0.96 AUC.
 			\end{itemize}
 
-            \item \noindent {\bf Multi-modality Models for Headache Diagnosis}
+			\item \noindent {\bf Generative Models on Medical Imaging} 
+            \vspace{-0.5em}
+			\begin{itemize}[label=$-$]
+				\setlength\itemsep{0.5pt}
+				\item Modified Cycle-GAN for unpaired harmonizing FBP and PiB tracer in amyloid PET images. Achieved correlation coefficient 0.97.
+				\item Developing diffusion models with asynchronous schedule for robust lesion segmentation.
+			\end{itemize}
+
+		\end{itemize}
+		
+
+	\item \noindent {\bf Postdoctoral Scholar at Arizona State University} (Advised by Dr. Teresa Wu)\\
+        \hfill{July. 2023 - Present, Tempe, AZ}
+		\vspace{-0.5em}
+        \begin{itemize}[label=$\bullet$]
+			\setlength\itemsep{0.5pt}
+            \item \noindent {\bf Generative Models on Medical Imaging}
+            \vspace{-0.5em}
             \begin{itemize}[label=$-$]
-				\item Utilized BioMedCLIP model for in headache diagnosis and subtype discovery using patient's MRI and clinical notes
+				\item Developed a fully weakly-supervised anomaly detection/segmentation framework (AnoFPDM) using guided diffusion models. Achieved state-of-the-art performance on lesion segmentation with DICE score 77.4 on BraTS21 dataset, eliminating pixel-level labels for hyperparameter tuning, which significantly reduces the annotation cost.
+				\item Developed a high-resolution PET image synthesis strategy using latent diffusion models. Achieved correlation 0.94 between synthesized PET image and digital phantoms.
+				\item Exploring the potential of using vision autoregressive models in medical images 
 			\end{itemize}
         \end{itemize}
         
-        
 	\item \noindent {\bf Research Assistant at Binghamton University} (Advised by Dr. Changqing Cheng)\\
-	\hfill{Feb. 2019 - May 2023, Binghamton, NY}
-	\begin{itemize}[label=$\bullet$]
-	
-	    \item \noindent {\bf Physics-informed Neural Network (PINN) for Covid-19 Outbreak Prediction}
-		\begin{itemize}[label=$-$]
-	        \item Included Bayesian framework in traditional PINN for robust prediction
-		\end{itemize}
-		
-	    \item \noindent {\bf Surrogate Modeling and Active Learning/Sequential Design}
-	    \begin{itemize}[label=$-$]
-	        \item Developed a novel surrogate model which combines generalized polynomial chaos and stochastic kriging model for efficient surrogate modeling of stochastic systems
-	       
-	        \item Developed single-section and batch-selection sampling algorithms with Gaussian process
-	    \end{itemize}
+		\hfill{Aug. 2017 - May 2023, Binghamton, NY}
+		\vspace{-0.5em}
+
+		\begin{itemize}[label=$\bullet$]
+			\setlength\itemsep{0.5pt}
+			\item \noindent {\bf Physics-informed Neural Network (PINN) for Covid-19 Outbreak Prediction}
+			\vspace{-0.5em}
+			\begin{itemize}[label=$\bullet$]
+				\setlength\itemsep{0.5pt}
+				\item Included Bayesian framework in traditional PINN for robust prediction. Achieved significant variance reduction $\sim$30\%.
+			\end{itemize}
+			
+			\item \noindent {\bf Surrogate Modeling and Active Learning/Sequential Design}
+			\vspace{-0.5em}
+			\begin{itemize}[label=$\bullet$]
+				\setlength\itemsep{0.5pt}
+				\item Developed a novel surrogate model which combines generalized polynomial chaos and stochastic kriging model for efficient surrogate modeling of stochastic systems. Achieved $\sim$90\% improvement in computational budget without loss of accuracy compared to traditional Monte Carlo simulation.
+			
+				\item Developed single-section and batch-selection sampling algorithms with Gaussian process. Achieved 70\% improvement in computational efficiency compared to traditional one-shot design.
+			\end{itemize}
 	    
-		\item \noindent {\bf Uncertainty Quantification for Machining Process}
-		\begin{itemize}[label=$-$]
-		    \item Developed uncertainty quantification framework using generalized polynomial chaos expansion for machining process 
-		\end{itemize}
+			\item \noindent {\bf Uncertainty Quantification for Machining Process}
+			\vspace{-0.5em}
+			\begin{itemize}[label=$\bullet$]
+				\setlength\itemsep{0.5pt}
+				\item Developed uncertainty quantification framework using generalized polynomial chaos expansion for machining process.
+			\end{itemize}
 	\end{itemize}
 \end{itemize}
 
 
-%\vspace{3mm}
-%\noindent{\bf AWARD \& HONOR}
+\vspace{-2em}
 \section*{AWARD \& HONOR}
+\vspace{-0.5em}
 \begin{itemize}
-	\item 2023 Distinguished Dissertation Award, Binghamton University
+	\setlength\itemsep{0.5pt}
+	\item 2023 Distinguished Dissertation Award, Binghamton University \textbf{(top 1\%)}
 	\hfill{2024}
     \item Excellence in Systems Science Research Award, Binghamton University
 	\hfill{2023}
@@ -132,12 +167,14 @@
 	\hfill{2015}
 \end{itemize}
 
-
-\section*{PUBLICATIONS}
+\vspace{-2em}
+\section*{PUBLICATIONS \hfill\hfill\hfill\hfill \href{https://scholar.google.com/citations?user=3Z6Z9ZkAAAAJ&hl=en}{GOOGLE SCHOLAR PROFILE}} 
+\vspace{-0.5em}
 \begin{enumerate}
+	\setlength\itemsep{0.5pt}
 	\item Shah, J., {\bf Che, Y.}, Sohankar, J., Luo, J., Li, B., Su, Y. and Wu, T. ``Enhancing PET quantification: MRI-guided super-resolution using latent diffusion models'' \textit{Life} 14.12 (2024): 1580. \url{https://doi.org/10.3390/life14121580}
 	
-	\item Shah, J., Krell-Roeschc, J., Forzanie, E., Knopmanf, D.S., Cliff, R.J., Petersenc, R.C., {\bf Che, Y.}, Wu, T. and Geda, Y.E. ``Predicting cognitive decline from neuropsychiatric symptoms and Alzheimer’s disease biomarkers: A machine learning approach to a population-based data'' \textit{Journal of Alzheimer's Disease} (In press)
+	\item Shah, J., Krell-Roeschc, J., Forzanie, E., Knopmanf, D.S., Cliff, R.J., Petersenc, R.C., {\bf Che, Y.}, Wu, T. and Geda, Y.E. ``Predicting cognitive decline from neuropsychiatric symptoms and Alzheimer’s disease biomarkers: A machine learning approach to a population-based data'' \textit{Journal of Alzheimer's Disease} 13872877241306654 (2025). \url{https://journals.sagepub.com/doi/full/10.1177/13872877241306654}
 	
 	\item {\bf Che, Y.}, Rafsani, F., Shah, J., Siddiquee, M. M. R. and Wu, T. ``AnoFPDM: Anomaly segmentation with forward process of diffusion models for brain MRI" \url{https://arxiv.org/abs/2404.15683} (Accepted by ASTAD workshop at WACV 2025).
 
@@ -164,24 +201,24 @@
 	\item {\bf Che, Y.} and Cheng, C. ``Uncertainty quantification in stability analysis of chaotic systems with discrete delays,'' \textit{Chaos, Solitons} \& \textit{Fractals} 116 (2018): 208-214. \url{https://doi.org/10.1016/j.chaos.2018.08.024}.
 \end{enumerate}
 
-\section*{\bf PROFESSIONAL SERVICES}
-\begin{itemize}	
-		\item Conference Reviewer
-		\begin{itemize}[label=$\bullet$]
-			\item Medical Image Computing and Computer Assisted Intervention (MICCAI)
-			\item International Conference on Automation Science and Engineering (CASE)
-		\end{itemize}
-        \item Journal Reviewer 
-        \begin{itemize}[label=$\bullet$]
-            \item Physica D: Nonlinear Phenomena
-            \item Scientific Reports
-        \end{itemize}
+% \section*{\bf PROFESSIONAL SERVICES}
+% \begin{itemize}	
+% 		\item Conference Reviewer
+% 		\begin{itemize}[label=$\bullet$]
+% 			\item Medical Image Computing and Computer Assisted Intervention (MICCAI)
+% 			\item International Conference on Automation Science and Engineering (CASE)
+% 		\end{itemize}
+%         \item Journal Reviewer 
+%         \begin{itemize}[label=$\bullet$]
+%             \item Physica D: Nonlinear Phenomena
+%             \item Scientific Reports
+%         \end{itemize}
         
-	\item Student member, Student leadership board at IISE
-	\hfill{Mar. 2021-2022}
-	\item Vice president, ASQ Binghamton chapter
-	\hfill{Aug. 2019-2022}
-\end{itemize}
+% 	\item Student member, Student leadership board at IISE
+% 	\hfill{Mar. 2021-2022}
+% 	\item Vice president, ASQ Binghamton chapter
+% 	\hfill{Aug. 2019-2022}
+% \end{itemize}
 
 % \section*{\bf Bio}
 % Yiming Che, Ph.D., is a postdoctoral research Scholar in the Wu Lab at Arizona State University, under the mentorship of Dr. Teresa Wu. He earned his Ph.D. in Systems Science from Binghamton University, where he was advised by Dr. Changqing Cheng. His research focuses on the application of generative models in medical imaging, Bayesian statistics, Gaussian processes, and active learning. Dr. Che has authored over 10 peer-reviewed publications and has been recognized with several prestigious awards, including the 2023 Distinguished Dissertation Award, the 2023 Excellence in Systems Science Research Award, and the 2021 Graduate Student Excellence Award in Research from Binghamton University.
