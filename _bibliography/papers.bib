@@ -11,8 +11,10 @@
   author={Che, Yiming and Rafsani, Fazle and Shah, Jay and Siddiquee, Md Mahfuzur Rahman and Wu, Teresa},
   journal={arXiv preprint arXiv:2404.15683},
   year={2024},
-  html={https://arxiv.org/abs/2404.15683},
-  selected={true}
+  pdf={https://arxiv.org/abs/2404.15683},
+  selected={true},
+  abstract={Weakly-supervised diffusion models in anomaly segmen- tation, which leverage image-level labels and bypass the need for pixel-level labels during training, have shown superior performance over unsupervised methods, offer- ing a cost-effective alternative. Traditional methods that rely on iterative image reconstruction are not fully weakly- supervised due to their dependence on costly pixel-level la- bels for hyperparameter tuning in inference. To address this issue, we introduce Anomaly Detection with Forward Process of Diffusion Models (AnoFPDM), a fully weakly- supervised framework that operates without image recon- struction and eliminates the need for pixel-level labels in hyperparameter tuning. By using the unguided forward pro- cess as a reference, AnoFPDM dynamically selects hyper- parameters such as noise scale and segmentation threshold for each input. We improve anomaly segmentation by ag- gregating anomaly maps from each step of the guided for- ward process, which strengthens the signal of anomalous regions in the aggregated anomaly map. Our framework demonstrates competitive performance on the BraTS21 and ATLAS v2.0 datasets.},
+  code={https://github.com/SoloChe/AnoFPDM}
 }
 @article{shah2024enhancing,
   bibtex_show={true},
@@ -60,7 +62,6 @@
   doi={10.1103/PhysRev.47.777},
   html={https://doi.org/10.1016/j.physa.2023.128584},
   publisher={Elsevier},
-  selected={true}
 }
 @article{wan2023uncertainty,
   bibtex_show={true},
@@ -99,7 +100,10 @@
   year={2021},
   publisher={Elsevier},
   html={https://doi.org/10.1016/j.jcp.2021.110598},
-  selected={true}
+  selected={true},
+  abstract={Stochastic kriging (SK) offers an explicit way to characterize heterogeneous noise variance
+in stochastic computer simulations and has gained considerable traction recently as a surrogate model. Nevertheless, SK relies on tedious Monte Carlo (MC) method to estimate the intrinsic variance at each design input. For computationally expensive simulations, the substantial replication effort has essentially rendered SK intractable. To this end, we develop generalized polynomial chaos (gPC)-informed eﬃcient stochastic kriging (gPC-SK)
+to ameliorate the computational cost. At its core, gPC supplants the tedious repetitive MC simulations, instead resting on a much smaller set of sampling points to estimate the intrinsic uncertainty, thus applicable to those prohibitively expensive simulations. We present the gPC-SK in sequential optimal design on the borehole function and stability of time-delay dynamic systems.}
 }
 
 @article{che2021active,
@@ -139,7 +143,6 @@
   year={2020},
   html={https://doi.org/10.1016/j.physd.2020.132381},
   publisher={Elsevier},
-  selected={true}
 }
 
 @article{che2019multi,
@@ -154,7 +157,6 @@
   year={2019},
   html={https://doi.org/10.1063/1.5097934},
   publisher={AIP Publishing LLC},
-  selected={true}
 }
 
 @article{che2018uncertainty,
@@ -168,5 +170,6 @@
   year={2018},
   publisher={Elsevier},
   html={https://doi.org/10.1016/j.chaos.2018.08.024},
-  selected={true}
+  selected={true},
+  abstract={Time delay is ubiquitous in many real-world physical and biological systems. It typically gives rise to rich dynamic behaviors, from aperiodic to chaotic. The stability of such dynamic behaviors is of considerable interest for process control purposes. While stability analysis under deterministic conditions has been extensively studied, not too many works addressed the issue of stability under uncertainty. Nonetheless, uncertainty, in either modeling or parameter estimation, is inevitable in complex system studies. Even for high-fidelity models, the uncertainty of input parameters could lead to divergent behaviors compared to the deterministic study. This is especially true when the system is at or near the bifurcation point. To this end, we investigated generalized polynomial chaos (GPC) to quantify the impact of uncertain parameters on the stability of delay systems. Our studies suggested that uncertainty quantification in delay systems provides richer information for system stability compared to deterministic analysis. In contrast to the robust yet time-consuming Monte Carlo or Latin hypercube sampling method, GPC approach achieves the same accuracy but only with a fraction of the computational overhead.}
 }
