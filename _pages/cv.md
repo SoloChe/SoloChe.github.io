@@ -4,7 +4,7 @@ permalink: /cv/
 title: cv
 nav: true
 nav_order: 2
-cv_pdf: Resume.pdf
+cv_pdf: CV_YimingChe_2025.pdf
 toc:
   sidebar: left
 ---

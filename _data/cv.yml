@@ -18,19 +18,16 @@
 - title: Experience
   type: time_table
   contents:
-    - title: Postdoctoral Research Fellow
-      institution: <a href="https://labs.engineering.asu.edu/wulab/" target="_blank">Wu Lab</a>, Arizona State University
-      description: Advised by <a href="https://faculty.engineering.asu.edu/twu/" target="_blank">Dr. Teresa Wu</a>
-        
-      year: 2023 - Present
-
-
-    - title: Research Assistant
-      institution: SUNY Research Foundation, Binghamton University
+    - title: Senior Data Scientist
+      institution: <a href="https://tech.walmart.com/content/walmart-global-tech/en_us.html" target="_blank">Walmart Global Tech</a>, Bentonville, AR, United States
       description: 
-        Advised by <a href="https://www.binghamton.edu/ssie/people/profile.html?id=ccheng" target="_blank">Dr. Changqing Cheng</a>
-      year: 2019 - 2023
-      
+        Personalization and Recommendation Team
+      year: 2025 - Present
+
+    - title: Postdoctoral Research Fellow
+      institution: <a href="https://labs.engineering.asu.edu/wulab/" target="_blank">Wu Lab @ ASU</a>, Tempe, AZ, United States
+      description: Advised by <a href="https://faculty.engineering.asu.edu/twu/" target="_blank">Dr. Teresa Wu</a>
+      year: 2023 - 2025
 
 
 - title: Honors and Awards
@@ -66,6 +63,6 @@
   type: map
   contents:
     - name: Journal Reviewer
-      value: Physica D Nonlinear Phenomena   
+      value: Physica D Nonlinear Phenomena, Journal of Alzheimer's Disease
     - name: Conference Reviewer
       value: MICCAI, CASE
