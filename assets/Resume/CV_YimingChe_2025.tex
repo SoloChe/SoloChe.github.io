@@ -5,7 +5,7 @@
 
 % \author{+1(607)-338-8871 | yche1@binghamton.edu | \href{https://soloche.github.io}{homepage} | \href{https://github.com/SoloChe}{github}}
 
-\author{+1(607)338-8871 $\vert$ yche1@binghamton.edu $\vert$ \href{https://soloche.github.io}{Homepage} $\vert$ \href{https://scholar.google.com/citations?user=HFI1L0QAAAAJ}{Google Scholar}}
+\author{+1(607)338-8871 $\vert$ yche1@binghamton.edu $\vert$ \href{https://soloche.github.io}{Homepage} $\vert$ \href{https://scholar.google.com/citations?user=HFI1L0QAAAAJ}{Google Scholar} $\vert$ \href{https://github.com/SoloChe}{GitHub}}
 
 \date{}
 \usepackage{titling}
@@ -37,41 +37,42 @@
 	\maketitle
 
 \vspace{-5em}
+
 \section*{PROFESSIONAL SKILLS \& KNOWLEDGE}
 \vspace{-0.5em}
  \begin{itemize}
 	\setlength\itemsep{0.5pt}
+	% \item \textbf{Summary:} Data Scientist and Machine Learning Researcher with a PhD in Systems Science, 8+ years of experience in statistical modeling, generative AI, and healthcare analytics. Adept at solving real-world problems through large-scale data analysis, predictive modeling, and optimization. Experienced in cross-functional collaboration with clinicians, engineers, and researchers.
+	% \vspace{-0.4em}
  	\item {\bf Programming Languages:} Python, Matlab, R
- 	% \item {\bf Skills:} Linux, Slurm, Git/GitHub, MySQL, PySpark, Pandas, Bash, PyTorch/TensorFlow, SKlearn,  Hugging Face, CI/CD, Docker, AWS, MLflow
-	 \item {\bf Skills:} 
-	 \vspace{-2.35em}
-	 \begin{tabbing}
-		\hspace{3.1em} \= Linux, Slurm, Git/GitHub, MySQL, PySpark, Pandas, Bash, PyTorch/TensorFlow\\
-		\> SKlearn, Hugging Face, Docker, AWS, MLflow, CI/CD
-	\end{tabbing}
-	\vspace{-0.7em}
- 	\item {\bf Research Interests:} Generative models, Medical imaging, Bayesian statistics, Active learning
+ 	\vspace{-0.4em}
+ 	\item {\bf ML Frameworks:} PyTorch, TensorFlow, scikit-learn, HuggingFace, LangChain
+ 	\vspace{-0.4em}
+ 	\item {\bf Data Pipeline:} SQL, Pandas, PySpark, Snowflake, Databricks
+ 	\vspace{-0.4em}
+ 	\item {\bf Cloud/DevOps:} AWS(S3, EC2), SageMaker, Docker, CI/CD, MLflow/Wandb, Flask
+ 	\vspace{-0.4em}
+	\item {\bf Tools:} Linux (Slurm), Git/GitHub, Bash
+ 	\vspace{-0.4em}
  \end{itemize}
 
 \vspace{-1.5em}
 \section*{EDUCATION BACKGROUND}
 \vspace{-0.5em}
+
 \begin{itemize}
 	\setlength\itemsep{0.5pt}
-
-	\item \noindent{\bf Binghamton University, State University of New York, NY, United States
-	\\Department of Systems Science and Industrial Engineering}                                                           
-	\\Doctor of Philosophy in Systems Science \hfill May 2023 
+	\item \noindent{\bf Binghamton University, State University of New York, NY, United States}                                                           
+	\\Doctor of Philosophy in Systems Science (focus on Machine Learning) \hfill May 2023 
 	% \\Advisor: Dr. Changqing Cheng
-
-	\item \noindent{\bf Binghamton University, State University of New York, NY, United States
-	\\Department of Systems Science and Industrial Engineering}                                                           
+	\vspace{-0.4em}
+	\item \noindent{\bf Binghamton University, State University of New York, NY, United States}                                                           
 	\\Master of Science in Industrial Engineering \hfill  May 2018
 	% Advisor: Dr. Changqing Cheng
-
-    \item \noindent{\bf Capital University of Economics and Business, Beijing, China
-    \\Department of Industrial Engineering}
+	\vspace{-0.4em}
+    \item \noindent{\bf Capital University of Economics and Business, Beijing, China}
     \\Bachelor of Science in Industrial Engineering \hfill July 2017 
+	\vspace{-0.3em}
 \end{itemize}
 
 \vspace{-1.5em}
@@ -81,132 +82,120 @@
 \begin{itemize}
 	\setlength\itemsep{0.5pt}
 
-	\item \noindent {\bf Postdoctoral Scholar at Arizona State University} (Advised by Dr. Teresa Wu)\\
-        \hfill{July. 2023 - Present, Tempe, AZ}
+	\item \noindent {\bf Postdoctoral Scholar at Arizona State University \\ Research (Data) Scientist at ASU-Mayo Center for Innovative Imaging (Concurrent)}\\
+        \hfill{July 2023 - Present, Tempe, AZ}
 		\vspace{-0.5em}
         \begin{itemize}[label=$\bullet$]
+
 			\setlength\itemsep{0.5pt}
-            \item \noindent {\bf Diffusion Models on Medical Imaging}
-            \vspace{-0.5em}
-            \begin{itemize}[label=$-$]
-				\item Developed a fully weakly-supervised anomaly detection/segmentation framework (AnoFPDM) using guided diffusion models. Achieved state-of-the-art performance on lesion segmentation with DICE score 77.4 on BraTS21 dataset, eliminating pixel-level labels for hyperparameter tuning, which significantly reduces the annotation cost.
-				\item Developed a high-resolution PET image synthesis strategy using latent diffusion models and low-dose PET image. Achieved correlation 0.94 between synthesized PET image and digital phantoms. Reduced the need for high-dose PET scans, minimized patient radiation exposure and enabled low-dose PET imaging to achieve high-resolution results, making scans more accessible and affordable.
-				\item Developing diffusion models with asynchronous variance schedule to increase signal strength of anomaly regions on anomaly map for robust lesion segmentation (working project).
-			\end{itemize}
-
-			\item \noindent {\bf Multi-modality (Text and Image) Models for Headache Diagnosis}
-            \vspace{-0.5em}
-            \begin{itemize}[label=$-$]
-				\setlength\itemsep{0.5pt}
-				\item Preprocessed and tokenized clinical notes from Mayo Clinic.
-				\item Finetuned BioMedCLIP model for headache diagnosis using patient's MRI and clinical notes. Achieved state-of-the-art performance in headache diagnosis with 0.96 AUC. Reduced misdiagnosis rates, potentially saving hospitals and insurance companies on unnecessary treatments.
-				\item Finetuned solely on text encoder PubMedBERT and vision encoder pretrained ViT for comparison.
-			\end{itemize}
-        \end{itemize}
-
-	\item \noindent {\bf Research Scientist at ASU-Mayo Center for Innovative Imaging}\\
-		\hfill{July. 2023 - Present, Tempe, AZZZ}
-		\vspace{-0.5em}
-		\begin{itemize}[label=$\bullet$]
-			
-			\item \noindent {\bf GAN-based Models for Image Harmonization} 
-            \vspace{-0.5em}
-			\begin{itemize}[label=$-$]
-				\setlength\itemsep{0.5pt}
-				\item Modified Cycle-GAN for unpaired harmonization between FBP and PiB tracer in amyloid PET images. Achieved correlation coefficient 0.97 between two tracers after harmonization. Reduced need for repeated scans to lower costs for hospitals and patients.
-				\item Utilized Cycle-GAN for unpaired harmonization between CT and MRI to boost the performance of multi-modality classification. Achieved $\sim$16\% AUC improvement in classification performance with real CT and synthetic MRI.
-			\end{itemize}
-
-			\item \noindent {\bf Machine Learning for Cognitive Decline Prediction}
+			\item \noindent \textbf{Led Development of End-to-End Cycle-GAN for Tracer Data Translation (In Progress)}
 			\vspace{-0.5em}
-			\begin{itemize}[label=$-$]
-				\item Preprocessed and analyzed patients's cognitive data in Python. Performed feature selection and model selection from XGBoost, random forest, logistic regression, QDA and SVM with nested cross-validation. 
-				\item According to the feature importance (SHAP Value) and statistical test (Wald test), a set of features are regard as the most important features for cognitive decline prediction. These findings are new insights for the clinical research.
+			\begin{itemize}[label=$\bullet$]
+				\setlength\itemsep{0.5pt}
+				\item Optimized Cycle-GAN model for translation between FBP and PiB tracer (tabular data) in amyloid PET images. \textbf{Eliminated the requirement of paired data without loss of accuracy (achieved correlation 0.97)}. Reduced clinical trial costs and expand access to amyloid imaging in non-specialist settings. [\href{https://github.com/SoloChe/e2e_PET_tracer_translation}{Project Link}] (Paper in preparation)
+				\item Utilized \textbf{Airbyte} for data extraction from \textbf{AWS S3} to \textbf{Snowflake} for \textbf{data ELT}, and performed data \textbf{EDA} using \textbf{Pandas}.
+				\item Implemented modified Cycle-GAN model using \textbf{PyTorch} and deployed the \textbf{dockerized} model using \textbf{AWS SageMaker} and \textbf{Flask} for inference. Utilized GitHub Action for \textbf{CI/CD}.
+				\item Collaborated with clinicians from Banner Alzheimer’s Institute to validate model outputs.
 			\end{itemize}
 
-		\end{itemize}
-		
+			\item \noindent \textbf{Led Development of End-to-End Multi-agent Medical Q\&A System (In Progress)}
+			\vspace{-0.5em}
+			\begin{itemize}[label=$\bullet$]
+			\setlength\itemsep{0.5pt}
+				\item Implemented medical Q\&A system with multi-agent retrieval-augmented generation (RAG) using \textbf{HuggingFace} and \textbf{PyTorch} to build fully customized clinical support tools. [\href{https://github.com/SoloChe/Medical_QA_RAG}{Project Link}]
+				\item Vectorized medical datasets for corpus using \textbf{FAISS}.
+				\item Fine-tuned LLMs with 7B parameter with \textbf{LoRa} utilizing distributed training. 
+				\item Deployed the inference pipeline using \textbf{AWS SageMaker} and \textbf{Flask} for real-time inference.
+				\item Optimizing the RAG with \textbf{ReAct} using \textbf{LangChain} and \textbf{OpenAI API} to enhance the performance.
+			\end{itemize}
 
-	
+			\setlength\itemsep{0.5pt}
+            \item \noindent {\bf Led Development of Diffusion Models on Medical Imaging}
+            \vspace{-0.5em}
+            \begin{itemize}[label=$\bullet$]
+				\item Developed a fully weakly-supervised anomaly detection/segmentation framework (\href{https://openaccess.thecvf.com/content/WACV2025W/ASTAD/papers/Che_AnoFPDM_Anomaly_Detection_with_Forward_Process_of_Diffusion_Models_for_WACVW_2025_paper.pdf}{AnoFPDM})  using guided diffusion models. \textbf{Achieved state-of-the-art performance on lesion segmentation with DICE score 77.4 on BraTS21 dataset}, eliminating pixel-level labels for hyperparameter tuning, which significantly reduces the annotation cost.
+				% \item Developed a high-resolution PET image synthesis pipeline  using latent diffusion models and low-dose PET image (\href{https://www.mdpi.com/2075-1729/14/12/1580}{paper}). Achieved correlation 0.94 between synthesized PET image and digital phantoms. Reduced the need for high-dose PET scans, minimized patient radiation exposure and enabled low-dose PET imaging to achieve high-resolution results, making scans more accessible and affordable.
+				\item Implemented various diffusion models in \textbf{PyTorch} using \textbf{distributed training/inference} on Linux (Slurm job scheduler). 
+			\end{itemize}
+
+			\item \noindent {\bf Led Development of Fusion of CT and MRI for Traumatic Brain Injury Recovery Prediction} 
+			\vspace{-0.5em}
+			\begin{itemize}[label=$\bullet$]
+				\setlength\itemsep{0.5pt}
+				\item Utilized Cycle-GAN to generate synthetic MRI from real CT to address long waiting time of MRI. Developed a multi-modal classification pipeline combining CT and synthetic MRI using ResNet. \textbf{Achieved $\sim$16\% AUC improvement} compared to only using single CT modality. 
+				\item Collaborated with clinicians at Mayo Clinic to validate model outputs, ensuring the solution addressed real patient-care needs. (Paper under review)
+			\end{itemize}
+
+			\item \noindent {\bf Co-led Development of Machine Learning for Cognitive Decline Prediction}
+			\vspace{-0.5em}
+			\begin{itemize}[label=$\bullet$]
+				\item Conducted \textbf{model selection} from classification models, e.g., \textbf{XGBoost, random forest and SVM}, with nested cross-validation for robust cognitive decline prediction.
+				\item Applied \textbf{SHAP analysis} and \textbf{A/B test} (Wald test) for feature importance in cognitive decline prediction. \textbf{Identified top 5 features}, providing insights to the clinical research. (\href{https://journals.sagepub.com/doi/abs/10.1177/13872877241306654}{paper})
+				\item Collaborated cross-functionally with clinicians and data engineers from Mayo Clinic to preprocess patient cognitive assessments.
+			\end{itemize}
+
+			\item \noindent {\bf Co-led Development of Multi-modality (Text and Image) Models for Headache Diagnosis}
+            \vspace{-0.5em}
+            \begin{itemize}[label=$\bullet$]
+				\setlength\itemsep{0.5pt}
+				\item Fine-tuned multi-modal classification pipelines combining MRI and clinical notes based on BioMedCLIP using \textbf{PyTorch}. Fine-tuned solely on PubMedBERT and ViT for co-learning. \textbf{Achieved state-of-the-art performance in headache diagnosis with 0.96 AUC}. Reduced misdiagnosis rates, potentially saving hospitals and insurance companies on unnecessary treatments. (Paper under review)
+				\item Collaborated cross-functionally with clinicians from Mayo Clinic for biomarker extraction and clinical interpretation.
+			\end{itemize}
         
-	\item \noindent {\bf Research Assistant at Binghamton University} (Advised by Dr. Changqing Cheng)\\
+	\end{itemize}
+		
+	
+	\item \noindent {\bf Research Assistant (PhD) at Binghamton University} \\
 		\hfill{Aug. 2017 - May 2023, Binghamton, NY}
 		\vspace{-0.5em}
 
 		\begin{itemize}[label=$\bullet$]
 			\setlength\itemsep{0.5pt}
-			\item \noindent {\bf Physics-informed Neural Network (PINN) for Covid-19 Outbreak Prediction}
+			\item \noindent {\bf Researched Bayesian Statistics and Uncertainty Quantification}
 			\vspace{-0.5em}
-			\begin{itemize}[label=$-$]
+			\begin{itemize}[label=$\bullet$]
 				\setlength\itemsep{0.5pt}
 				\item Integrated a Bayesian framework into traditional PINN for enhanced robustness and uncertainty quantification. Provided confidence intervals for predictions and improved reliability over non-Bayesian PINNs for more trustworthy decision-making process. 
-			\end{itemize}
-			
-			\item \noindent {\bf Bayesian Modeling and Active Learning/Sequential Design}
-			\vspace{-0.5em}
-			\begin{itemize}[label=$-$]
-				\setlength\itemsep{0.5pt}
-				\item Developed a novel Bayesian surrogate model which combines generalized polynomial chaos and stochastic kriging model for efficient surrogate modeling of stochastic systems. Achieved $\sim$90\% improvement in computational budget without loss of accuracy compared to traditional Monte Carlo simulation.
-			
+				\item Developed a novel Bayesian surrogate model which combines generalized polynomial chaos and Gaussian process for efficient surrogate modeling of stochastic systems. Achieved $\sim$90\% improvement in computational budget without loss of accuracy compared to traditional Monte Carlo simulation.
 				\item Developed single-section and batch-selection sampling algorithms with Gaussian process. Achieved $\sim$70\% improvement in computational efficiency compared to traditional one-shot design.
-			\end{itemize}
-	    
-			\item \noindent {\bf Uncertainty Quantification for Machining Process}
-			\vspace{-0.5em}
-			\begin{itemize}[label=$-$]
-				\setlength\itemsep{0.5pt}
 				\item Developed uncertainty quantification framework using generalized polynomial chaos expansion for machining process. Achieved $\sim$80\% improvement in computational efficiency compared to Monte Carlo simulation.
 			\end{itemize}
 	\end{itemize}
 \end{itemize}
 
-
 \vspace{-1.5em}
-\section*{AWARD \& HONOR}
+\section*{SELECTED AWARD \& HONOR}
 \vspace{-0.5em}
 \begin{itemize}
 	\setlength\itemsep{0.5pt}
-	\item 2023 Distinguished Dissertation Award, Binghamton University \textbf{(top 1\%)}
+	\item Distinguished Dissertation Award, Binghamton University \textbf{(top 1\%)}
 	\hfill{2024}
+	\vspace{-0.4em}
     \item Excellence in Systems Science Research Award, Binghamton University
 	\hfill{2023}
-	\item INFORMS Bonder Foundation Award
-	\hfill{2021}
-	\item Finalist, IISE-DAIS Mobile App Competition at 2021 IISE Annual Conference and Expo
-	\hfill{2021}
+	% \item INFORMS Bonder Foundation Award
+	% \hfill{2021}
+	% \item Finalist, IISE-DAIS Mobile App Competition at 2021 IISE Annual Conference and Expo
+	% \hfill{2021}
+	\vspace{-0.4em}
 	\item Binghamton University Graduate Student Excellence Award in Research \textbf{(top 1\%)}
 	\hfill{2021}
-	% \item Travel Grant of Midwest Dynamical Systems Conference 2019, University of Illinois at Chicago 
-	% \hfill{2019}
-	% \item Second Place, Best Student Paper Competition at 2019 IISE Annual Conference and Expo \\(Healthcare track)
-	% \hfill{2019}
-	% \item Honorable Mention, Binghamton University Research Day Poster Competition, 2018
-	% \hfill{2018}
-	% \item National Scholarship, Capital University of Economics and Business
-	% \hfill{2015}
+	\vspace{-0.3em}
 \end{itemize}
 
 \vspace{-1.5em}
 \section*{SELECTED PUBLICATIONS} 
 \vspace{-0.5em}
-\hspace{1.2em}\textbf{Summary:} 14 publications, including 8 first-author papers (13 journal articles, 1 conference paper).
+\hspace{1.2em}\textbf{Summary:} 14 publications, including 8 first-author papers (13 journal articles, 1 conference paper, 3 working papers).
 \vspace{-0.5em}
 \begin{enumerate}
 	\setlength\itemsep{0.5pt}
 	\item {\bf Che, Y.}, Rafsani, F., Shah, J., Siddiquee, M. M. R. and Wu, T. ``AnoFPDM: Anomaly segmentation with forward process of diffusion models for brain MRI" \textit{Proceedings of the Winter Conference on Applications of Computer Vision. 2025.} \url{https://arxiv.org/abs/2404.15683}
-
-	\item Shah, J., {\bf Che, Y.}, Sohankar, J., Luo, J., Li, B., Su, Y. and Wu, T. ``Enhancing PET quantification: MRI-guided super-resolution using latent diffusion models'' \textit{Life} 14.12 (2024): 1580. \url{https://doi.org/10.3390/life14121580}
-	
+	\vspace{-0.4em}
 	\item Wan, J., Kataoka, J., Sivakumar, J., Pena, E., {\bf Che, Y.}, Sayama, H. and Cheng, C. ``Sparse Bayesian learning for sequential inference of network connectivity from Small Data'' \textit{IEEE Transactions on Network Science and Engineering} 11.6 (2024): 5892-5902. \url{https://doi.org/10.1109/TNSE.2024.3471852}
-	
+	\vspace{-0.4em}
 	\item {\bf Che, Y.}, Guo, Z. and Cheng, C. ``Generalized polynomial chaos-informed efficient stochastic Kriging,'' \textit{Journal of Computational Physics} 445 (2021): 110598. \url{https://doi.org/10.1016/j.jcp.2021.110598}
-	
-	\item {\bf Che, Y.} and Cheng, C. ``Active learning and relevance vector machine in efficient estimate for basin stability of dynamic networks,'' \textit{Chaos: An Interdisciplinary Journal of Nonlinear Science} 31.5 (2021): 053129. \url{https://doi.org/10.1063/5.0044899}
-	
-	\item Wu, X., Zheng, Y., {\bf Che, Y.} and Cheng, C. ``Pattern recognition and automatic identification of early-stage atrial fibrillation,''\textit{Expert Systems with Applications} 158 (2020): 113560. \url{https://doi.org/10.1016/j.eswa.2020.113560}
-	
-	\item {\bf Che, Y.}, Liu, J.  and Cheng, C. ``Multi-fidelity modeling in sequential design for identification of stability region in dynamic time-delay systems,''  \textit{Chaos: An Interdisciplinary Journal of Nonlinear Science} 29.9 (2019): 093-105. \url{https://doi.org/10.1063/1.5097934}
-
+	\vspace{-0.4em}
 	\item {\bf Che, Y.} and Cheng, C. ``Uncertainty quantification in stability analysis of chaotic systems with discrete delays,'' \textit{Chaos, Solitons} \& \textit{Fractals} 116 (2018): 208-214. \url{https://doi.org/10.1016/j.chaos.2018.08.024}
 \end{enumerate}
 
@@ -259,10 +248,4 @@
 % 	\item Vice president, ASQ Binghamton chapter
 % 	\hfill{Aug. 2019-2022}
 % \end{itemize}
-
-% \section*{\bf Bio}
-% Yiming Che, Ph.D., is a postdoctoral research Scholar in the Wu Lab at Arizona State University, under the mentorship of Dr. Teresa Wu. He earned his Ph.D. in Systems Science from Binghamton University, where he was advised by Dr. Changqing Cheng. His research focuses on the application of generative models in medical imaging, Bayesian statistics, Gaussian processes, and active learning. Dr. Che has authored over 10 peer-reviewed publications and has been recognized with several prestigious awards, including the 2023 Distinguished Dissertation Award, the 2023 Excellence in Systems Science Research Award, and the 2021 Graduate Student Excellence Award in Research from Binghamton University.
-
-
-
 \end{document}
